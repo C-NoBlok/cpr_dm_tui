@@ -1,0 +1,57 @@
+from cpr.mooks.mook import Mook, Stats
+from cpr.weapons import poor_quality_shotgun, very_heavy_pistol
+
+CyberPscycho = Mook(
+    name='CyberPsycho',
+    mook_type='boss',
+    stats=Stats(
+        INT=5,
+        REF=8,
+        DEX=8,
+        TECH=5,
+        COOL=4,
+        WILL=7,
+        LUCK=0,
+        MOVE=8,
+        BODY=10,
+        EMP=0
+    ),
+    weapons=[very_heavy_pistol],
+    armor=(11, 11),
+    skills={
+        'athletics': 16,
+        'basic tech': 11,
+        'brawling': 15,
+        'conceal object': 5,
+        'concentration': 6,
+        'conversation': 2,
+        'cryptograph': 5,
+        'deduction': 5,
+        'Drive Land': 10,
+        'education': 7,
+        'endurance': 10,
+        'electronics/security tech': 5,
+        'evasion': 13,
+        'first aid': 6,
+        'forgery': 5,
+        'handgun': 12,
+        'heavy weapons': 14,
+        'human perception': 2,
+        'interrogation': 13,
+        'language (native)': 7,
+        'local expert': 7,
+        'melee weapon': 17,
+        'library search': 5,
+        'perception': 9,
+        'persuasion': 6,
+        'pick lock': 5,
+        'resist torture/drug': 15,
+        'shoulder arms': 8,
+        'stealth': 10,
+        'tracking': 10
+    },
+    special=['Armor Piercing Grenade x2', 'Heavy Pistol Ammo x100',
+             'Cyberarm x2 ( Popup Grenade Launcher x2, Popup Heavy SMG, Wolvers)',
+             'Cyberleg x2 (Jump Boosters x2)', 'Cybersnake', 'Grafted Muscle & Bone Lace',
+             'Neural Link (Chipware Socket, Pain Editor)', 'Subdermal Armor']
+)

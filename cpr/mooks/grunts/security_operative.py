@@ -1,0 +1,57 @@
+from cpr.mooks.mook import Mook, Stats
+from cpr.weapons import poor_quality_shotgun, very_heavy_pistol
+
+security_operative = Mook(
+    name='WIP',
+    mook_type='mini-boss',
+    stats=Stats(
+        INT=5,
+        REF=8,
+        DEX=6,
+        TECH=7,
+        COOL=4,
+        WILL=4,
+        LUCK=0,
+        MOVE=6,
+        BODY=5,
+        EMP=3
+    ),
+    weapons=[very_heavy_pistol],
+    armor=(11, 11),
+    skills={
+        'athletics': 11,
+        'basic tech': 12,
+        'brawling': 5,
+        'conceal object': 5,
+        'concentration': 8,
+        'conversation': 5,
+        'deduction': 5,
+        'demolition': 13,
+        'drive land': 10,
+        'education': 7,
+        'endurance': 4,
+        'electronics/security tech': 5,
+        'evasion': 13,
+        'first aid': 9,
+        'handgun': 14,
+        'heavy weapons': 14,
+        'human perception': 5,
+        'interrogation': 10,
+        'language (native)': 7,
+        'local expert': 7,
+        'melee weapon': 13,
+        'perception': 12,
+        'persuasion': 6,
+        'resist torture/drug': 14,
+        'shoulder arms': 8,
+        'science (chemistry)': 10,
+        'Streetwise': 8,
+        'stealth': 10,
+        'tactics': 8,
+        'tracking': 10
+    },
+    special=['Flamethrower Ammo', '(Incendiary Shotgun Shells) x8',
+             'VH Pistol Ammo x50', 'Incendiary Grenade x1',
+             'Flashbang Grenade x1', 'Cyberaudio Suite (Level Dampners)',
+             'Cybereye x2 (Anti-Dazzle x2)', 'Nasal Filters']
+)
