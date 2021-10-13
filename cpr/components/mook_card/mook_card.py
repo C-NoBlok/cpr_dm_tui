@@ -7,7 +7,7 @@ from cpr.components.mook_card.combat_component import CombatZone
 from cpr.components.mook_card.skills_component import SkillList
 
 
-class MookCard(urwid.LineBox):
+class MookCard(urwid.WidgetWrap):
 
     def __init__(self, mook_obj, event_handler, debug):
         self.event_handler = event_handler
@@ -43,10 +43,13 @@ class MookCard(urwid.LineBox):
             urwid.Divider('-'),
             self.special_widget,
         ])
+        self.line_box = urwid.LineBox(self.pile,
+                                      title=self.mook.name,
+                                      title_align='left')
+        self.line_box = urwid.AttrMap(self.line_box, 'card')
 
-        super().__init__(self.pile,
-                         title=self.mook.name,
-                         title_align='left')
+        super().__init__(self.line_box)
+
 
     def close_card(self, button):
         self.debug('Closing Card...')

@@ -15,7 +15,6 @@ class MookRoster(urwid.LineBox):
 
     def create_mook_card(self, mook_obj):
         card = MookCard(mook_obj, self.event_handler, self.debug)
-        card = urwid.AttrMap(card, 'card')
         return card
 
     def add_mook(self, mook_data):
