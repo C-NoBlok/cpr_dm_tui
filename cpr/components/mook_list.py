@@ -1,4 +1,5 @@
 from cpr.components.mook_list_box import MookListBox
+from cpr.components.emoji_map import ogre
 
 import urwid
 
@@ -15,14 +16,14 @@ class MookList(urwid.LineBox):
             focus_part='body'
 
         )
-        title = 'Mook List'
+
+        title = ogre + ' Mook List ' + ogre
         title_align = 'left'
         super().__init__(frame,
                          title=title,
                          title_align=title_align)
 
     def body(self):
-        # list_box = urwid.ListBox(self.list_walker())
         list_box = MookListBox(self.event_handler, self.debug_handler)
         return list_box
 

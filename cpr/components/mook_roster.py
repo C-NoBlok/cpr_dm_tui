@@ -15,14 +15,14 @@ class MookRoster(urwid.LineBox):
 
     def create_mook_card(self, mook_obj):
         card = MookCard(mook_obj, self.event_handler, self.debug)
+        card = urwid.AttrMap(card, 'card')
         return card
 
     def add_mook(self, mook_data):
         self.debug(f'Adding {mook_data.name} to roster.')
         self.mook_roster.body.append(self.create_mook_card(mook_data))
 
-    def remove_mook_card(self, mook_obj):
-        self.debug(f'Removing card from mook_list.body. {mook_obj in self.mook_roster.body}')
-        self.debug(f'{mook_obj, self.mook_roster.body}')
-        self.mook_roster.body.remove(mook_obj)
+    def remove_mook_card(self, mook_card):
+        self.debug(f'Removing {mook_card.mook.name} from roster')
+        self.mook_roster.body.remove(mook_card)
 

@@ -3,64 +3,101 @@ from cpr.components.mook_roster import MookRoster
 
 import urwid
 from urwid import raw_display
-from urwid.listbox import ListBoxError
 screen = raw_display.Screen()
-from urwid import LineBox, Columns, Text, Frame, BigText, Padding
 
+# Pallet tuple -> (name, foreground, background, mono, foreground_high, background_high)
 
-def unhandled_input(key):
-    if key[0] in ['mouse release', 'mouse drag']:
-        return
-    footer_text.set_text(str(key))
+pallete = [
+    ('header', 'dark red', 'light gray',),
+    ('footer', 'dark red', 'light gray',),
+    ('body', 'dark red', 'light gray',),
+    ('title', 'dark red', 'light gray'),
+    ('mook_list', 'dark red', 'light gray'),
+    ('button', 'dark red', 'light gray', 'standout'),
+    ('card', 'dark red', 'black'),
+    ('skill_button', 'white', 'black', 'standout'),
+    # ('hit_points',)
+    # ('hit_points_serious',)
+]
 
+"""
+'bold'
+'underline'
+'standout'
+'blink'
+'italics'
+'strikethrough'
+"""
 
-def handle_event(action, data):
-    if action == 'add_mook_to_roster':
-        debug(f'add_mook_to_roster called {data.name}')
-        roster.add_mook(data)
+class MainWidget(urwid.WidgetWrap):
 
-    if action == 'remove card':
-        debug(f'Removing {data.mook.name} from list')
-        roster.remove_mook_card(data)
+    def __init__(self):
 
+        self.roster = MookRoster(self.handle_event, self.debug)
+        self.mook_list = MookList(self.handle_event, self.debug)
 
-def debug(msg):
-    footer_text.set_text(msg)
-    # footer_text.set_text(str(screen.get_cols_rows()))
+        self.header = urwid.LineBox(
+            urwid.Pile([
+                urwid.Padding(urwid.BigText('Mook Manager',
+                                                  urwid.HalfBlock5x4Font()),
+                                    "center", None),
+                urwid.Divider('=')
+            ]
+            ))
+        self.header = urwid.AttrMap(self.header, 'header')
 
-    # text = ''
-    # for key, value in urwid.signals._signals.__dict__.items():
-    #     text += f'{key}: {value}\n'
-    # footer_text.set_text(text)
+        self.footer_text = urwid.Text('')
+        self.footer = urwid.Pile([self.footer_text])
+        self.footer = urwid.AttrMap(self.footer, 'footer')
 
+        self.body = urwid.Columns([
+            (19, self.mook_list),
+            self.roster
+        ])
+        self.body = urwid.AttrMap(self.body, 'body')
 
-roster = MookRoster(handle_event, debug)
-mook_list = MookList(handle_event, debug)
+        self.main_frame = urwid.Frame(
+            body=self.body,
+            header=self.header,
+            footer=self.footer
+        )
+        super().__init__(self.main_frame)
 
-header_text = Padding(
-    BigText('Mook Manager', urwid.HalfBlock5x4Font()),
-    "center",
-    None
-)
-footer_text = Text('footer')
+    def unhandled_input(self, key):
+        if key[0] in ['mouse release', 'mouse drag']:
+            return
+        self.debug(str(key))
 
-main_frame = Frame(
-    body=Columns([
-        (20, mook_list),
-         roster
-    ]),
-    header=header_text,
-    footer=footer_text
-)
+    def handle_event(self, action, data):
+        if action == 'add_mook_to_roster':
+            self.roster.add_mook(data)
 
-main_frame = LineBox(main_frame)
-# urwid.register_signal(urwid.display_common.BaseScreen, 'input descriptors change')
+        if action == 'remove card':
+            self.roster.remove_mook_card(data)
+
+    def debug(self, msg, show_signals=False):
+        def get_signals():
+            text = ''
+            for key, value in urwid.signals._signals.__dict__.items():
+                text += f'{key}: {value}\n'
+            return text
+
+        if show_signals:
+            self.footer_text.set_text(get_signals())
+
+        orig_text = self.footer_text.get_text()[0]
+
+        new_msg = f'>>> {msg}\n'
+
+        footer_text = orig_text + new_msg
+        messages = footer_text.split('\n')
+        if len(messages) > 4:
+            messages.pop(0)
+        footer_text = '\n'.join(messages)
+        self.footer_text.set_text(footer_text)
+
 
 def start_app():
-    loop = urwid.MainLoop(main_frame, unhandled_input=unhandled_input, pop_ups=True)
+    main = MainWidget()
+    loop = urwid.MainLoop(main, unhandled_input=main.unhandled_input, pop_ups=True, palette=pallete)
     loop.run()
-
-
-if __name__ == '__main__':
-    loop = start_app()
-

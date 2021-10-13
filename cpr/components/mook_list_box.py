@@ -17,7 +17,6 @@ class MookListBox(urwid.ListBox):
         return w
 
     def press_button(self, button):
-        self.debug_handler(button.label)
         self.event_handler('add_mook_to_roster', mooks[button.label])
 
     def get_mook_list(self):

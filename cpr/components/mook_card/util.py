@@ -12,6 +12,7 @@ def create_skill_buttons(mook, skills, col1_width=25, col2_width=6, on_press=Non
             (col1_width, urwid.Button(f'{skill}', on_press=on_press)),
             (col2_width, urwid.Text(button_side_text))
         ])
+        skill_cols = urwid.AttrMap(skill_cols, 'skill_button')
         contents.append(skill_cols)
     return contents
 

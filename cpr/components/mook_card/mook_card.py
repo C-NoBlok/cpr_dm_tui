@@ -59,8 +59,6 @@ class MookCard(urwid.LineBox):
         if roll == 1:
             roll -= randint(1, 10)
 
-        self.debug(button.label)
-
         if button.label in self.mook.skills:
             check = roll + self.mook.skills[button.label]
             check_str = f'{button.label} check: {check}'
