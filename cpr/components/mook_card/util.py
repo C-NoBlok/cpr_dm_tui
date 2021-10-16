@@ -1,16 +1,23 @@
 import urwid
+from cpr.components.mook_card.skill_button import SkillButton
 
 
 def create_skill_buttons(mook, skills, col1_width=25, col2_width=6, on_press=None, is_weapon=False):
     contents = []
     for skill in skills:
+
         if not is_weapon:
             button_side_text = f' : {mook.skills[skill]}'
         else:
             button_side_text = f' : {mook.weapons_by_name[skill].damage}D6'
+
+        skill_button = SkillButton(f'{skill}', on_press=on_press)
+        # skill_button = urwid.AttrWrap(skill_button, 'center', 'highlight')
+        skill_value = urwid.Text(button_side_text)
+        # skill_value = urwid.AttrMap(skill_value, 'highlight')
         skill_cols = urwid.Columns([
-            (col1_width, urwid.Button(f'{skill}', on_press=on_press)),
-            (col2_width, urwid.Text(button_side_text))
+            (col1_width, skill_button),
+            (col2_width, skill_value)
         ])
         skill_cols = urwid.AttrMap(skill_cols, 'skill_button')
         contents.append(skill_cols)

@@ -16,6 +16,22 @@ pallete = [
     ('button', 'dark red', 'light gray', 'standout'),
     ('card', 'dark red', 'black'),
     ('skill_button', 'white', 'black', 'standout'),
+    ('box_button', 'dark red', 'white'),
+    # ('hit_points',)
+    # ('hit_points_serious',)
+]
+pallete_256 = [
+    ('header', '', '', '', 'h196', 'g15'),
+    ('footer', '', '', '', 'h196', 'g15'),
+    ('body', 'dark red', 'light gray',),
+    ('title', 'dark red', 'light gray'),
+    ('mook_list', '', '', '', 'h196', 'g15'),
+    ('button', 'dark red', 'light gray'),
+    ('card', '', '', '', 'h196', 'g70'),
+    ('card_alt', '', '', '', 'h196', 'g80'),
+    ('skill_button', '', '', '', 'g0', 'g50'),
+    ('box_button', '', '', '', 'g95', 'g15'),
+    ('mook_list_text', '', '', '', 'g95', 'g15'),
     # ('hit_points',)
     # ('hit_points_serious',)
 ]
@@ -35,6 +51,7 @@ class MainWidget(urwid.WidgetWrap):
 
         self.roster = MookRoster(self.handle_event, self.debug)
         self.mook_list = MookList(self.handle_event, self.debug)
+        self.mook_list = urwid.AttrMap(self.mook_list, 'mook_list')
 
         self.header = urwid.LineBox(
             urwid.Pile([
@@ -99,5 +116,6 @@ class MainWidget(urwid.WidgetWrap):
 
 def start_app():
     main = MainWidget()
-    loop = urwid.MainLoop(main, unhandled_input=main.unhandled_input, pop_ups=True, palette=pallete)
+    loop = urwid.MainLoop(main, unhandled_input=main.unhandled_input, pop_ups=True, palette=pallete_256)
+    loop.screen.set_terminal_properties(colors=256)
     loop.run()

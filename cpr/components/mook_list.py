@@ -1,5 +1,6 @@
 from cpr.components.mook_list_box import MookListBox
-from cpr.components.emoji_map import ogre
+from cpr.components.emoji_map import ogre, plus, floppy_disk
+from cpr.components.box_button import BoxButton
 
 import urwid
 
@@ -28,13 +29,27 @@ class MookList(urwid.LineBox):
         return list_box
 
     def header(self):
+        text = urwid.Text('Mook List')
+        text = urwid.AttrMap(text, 'mook_list_text'),
         return urwid.Pile([
-            urwid.Text('Mook List'),
+            text,
             urwid.Divider()
         ])
 
     def footer(self):
-        return urwid.Text('save | remove ')
+        add_button = BoxButton('New', on_press=self.new_mook)
+        add_button = urwid.AttrMap(add_button, 'box_button')
+        save_mook = BoxButton('Save', on_press=self.save_mook)
+        save_mook = urwid.AttrMap(save_mook, 'box_button')
+        button_layout = urwid.Pile([add_button, save_mook])
+        return button_layout
+
+    def new_mook(self, *args):
+        self.debug_handler('Creating New Mook... (Not Implemented)')
+
+    def save_mook(self, *args):
+        self.debug_handler('Saving Mook... (Not Implemented. What am I saving?)')
+
 
     def list_walker(self):
         contents = [

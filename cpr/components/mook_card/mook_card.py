@@ -1,5 +1,6 @@
 import urwid
 from random import randint
+import uuid
 
 from cpr.components.mook_card.stats_component import generate_stats_grid_contents,\
     generate_secondary_stats_grid_contents
@@ -9,7 +10,8 @@ from cpr.components.mook_card.skills_component import SkillList
 
 class MookCard(urwid.WidgetWrap):
 
-    def __init__(self, mook_obj, event_handler, debug):
+    def __init__(self, mook_obj, event_handler, debug, alt_style=False):
+        self.id = uuid.uuid1()
         self.event_handler = event_handler
         self.debug = debug
         # self.debug(urwid.signals.regiser)
@@ -46,10 +48,12 @@ class MookCard(urwid.WidgetWrap):
         self.line_box = urwid.LineBox(self.pile,
                                       title=self.mook.name,
                                       title_align='left')
-        self.line_box = urwid.AttrMap(self.line_box, 'card')
+        if alt_style:
+            self.line_box = urwid.AttrMap(self.line_box, 'card_alt')
+        else:
+            self.line_box = urwid.AttrMap(self.line_box, 'card')
 
         super().__init__(self.line_box)
-
 
     def close_card(self, button):
         self.debug('Closing Card...')
