@@ -12,14 +12,14 @@ def create_skill_buttons(mook, skills, col1_width=25, col2_width=6, on_press=Non
             button_side_text = f' : {mook.weapons_by_name[skill].damage}D6'
 
         skill_button = SkillButton(f'{skill}', on_press=on_press)
-        # skill_button = urwid.AttrWrap(skill_button, 'center', 'highlight')
+        skill_button = urwid.AttrWrap(skill_button, 'skill_button', 'button_focus')
         skill_value = urwid.Text(button_side_text)
         # skill_value = urwid.AttrMap(skill_value, 'highlight')
         skill_cols = urwid.Columns([
             (col1_width, skill_button),
             (col2_width, skill_value)
         ])
-        skill_cols = urwid.AttrMap(skill_cols, 'skill_button')
+        # skill_cols = urwid.AttrMap(skill_cols, 'skill_button')
         contents.append(skill_cols)
     return contents
 

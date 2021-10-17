@@ -15,6 +15,7 @@ class SkillList(urwid.Columns):
         self.placeholder = urwid.WidgetPlaceholder(self.fill)
 
         self.skills_button = SkillLabelButton('--Skills--', on_press=self.toggle_skills)
+        self.skills_button = urwid.AttrMap(self.skills_button, 'button', 'button_focus')
 
         super().__init__([
             (14, self.skills_button),

@@ -2,8 +2,8 @@ import urwid
 from random import randint
 import uuid
 
-from cpr.components.mook_card.stats_component import generate_stats_grid_contents,\
-    generate_secondary_stats_grid_contents
+from cpr.components.mook_card.stats_component import Stats
+
 from cpr.components.mook_card.combat_component import CombatZone
 from cpr.components.mook_card.skills_component import SkillList
 from cpr.components.box_button import BoxButton
@@ -25,7 +25,11 @@ class MookCard(urwid.WidgetWrap):
 
         self.is_collapsed = False
 
+        self.delete_button = BoxButton('X', on_press=self.close_card)
+        self.min_max = BoxButton('-', on_press=self.collapse)
+
         self.mook = mook_obj
+        self.stats = Stats(self.mook, self.event_handler, self.debug)
 
         self.special_widget = \
             urwid.Text('Special: ' + ', '.join(self.mook.special))
@@ -43,12 +47,12 @@ class MookCard(urwid.WidgetWrap):
 
         self.pile = urwid.Pile([
             urwid.Columns([
-                generate_stats_grid_contents(self.mook),
+                self.stats.main_stats_component(),
                 (12, self.create_min_max_delete_buttons())
                 ]
             ),
             urwid.Divider('-'),
-            generate_secondary_stats_grid_contents(self.mook),
+            self.stats.secondary_stats_component(),
             self.main_placeholder
         ])
         self.line_box = urwid.LineBox(self.pile,
@@ -62,8 +66,6 @@ class MookCard(urwid.WidgetWrap):
         super().__init__(self.line_box)
 
     def create_min_max_delete_buttons(self):
-        self.delete_button = BoxButton('X', on_press=self.close_card)
-        self.min_max = BoxButton('-', on_press=self.collapse)
         return urwid.Columns([
             (5, self.min_max),
             (5, self.delete_button)

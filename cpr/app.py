@@ -29,9 +29,10 @@ pallete_256 = [
     ('button', 'dark red', 'light gray'),
     ('card', '', '', '', 'h196', 'g70'),
     ('card_alt', '', '', '', 'h196', 'g80'),
-    ('skill_button', '', '', '', 'g0', 'g50'),
+    ('skill_button', '', '', '', 'g100', 'g35'),
     ('box_button', '', '', '', 'g95', 'g15'),
     ('mook_list_text', '', '', '', 'g95', 'g15'),
+    ('button_focus', '', '', 'bold', 'g0', 'h196'),
     # ('hit_points',)
     # ('hit_points_serious',)
 ]
