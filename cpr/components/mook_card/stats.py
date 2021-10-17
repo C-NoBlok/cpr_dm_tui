@@ -11,10 +11,10 @@ class Stats(urwid.WidgetWrap):
         self.cell_width = 10
         self.h_seperation = 1
         self.v_seperation =1
-        self.align = 'center'
+        self.align = 'left'
 
         self.main_stats = [
-            urwid.IntEdit(f'INT: ', default=self.mook.stats.INT),
+            urwid.Text(f'INT: {self.mook.stats.INT}', align='center'),
             urwid.Text(f'REF: {self.mook.stats.REF}', align='center'),
             urwid.Text(f'DEX: {self.mook.stats.DEX}', align='center'),
             urwid.Text(f'TECH: {self.mook.stats.TECH}', align='center'),
@@ -50,14 +50,23 @@ class Stats(urwid.WidgetWrap):
             self.align
         )
 
+        self.editable_stat_grid_flow = urwid.GridFlow(
+            self.editable_stats,
+            self.cell_width,
+            self.h_seperation,
+            self.v_seperation,
+            self.align
+        )
+        self.secondary_stats_component = urwid.WidgetPlaceholder(self.generate_secondary_stats_contents())
+        self.main_placeholder = urwid.WidgetPlaceholder(self.stat_grid_flow)
+        super().__init__(self.main_placeholder)
+
+    @property
     def main_stats_component(self):
-        return self.stat_grid_flow
+        return self.main_placeholder
 
-    def secondary_stats_component(self):
-        return self.generate_secondary_stats_grid_contents()
-
-    def generate_secondary_stats_grid_contents(self, callback=None):
-        contents = [
+    def generate_secondary_stats_contents(self):
+        secondary_stat_contents = [
             urwid.IntEdit(f'    Hit Points: ', default=self.mook.hp),
 
             urwid.Pile([urwid.Text(f'Seriously Wounded: {self.mook.seriously_wounded}'),
@@ -65,9 +74,9 @@ class Stats(urwid.WidgetWrap):
 
             self.create_armor_widget()
         ]
-        contents = urwid.GridFlow(contents, 23, 1, 0, 'left')
+        grid = urwid.GridFlow(secondary_stat_contents, 23, 1, 0, 'left')
+        return grid
 
-        return contents
 
     def create_armor_widget(self):
         armor_elem = urwid.Columns([
@@ -83,14 +92,46 @@ class Stats(urwid.WidgetWrap):
 
     def toggle_editable(self):
         if self.editable:
-            self.stat_grid_flow.contents = self.main_stats
+            self.main_placeholder.original_widget = self.stat_grid_flow
             self.editable = False
 
         else:
-            self.stat_grid_flow.contents = self.editable_stats
+            self.main_placeholder.original_widget = self.editable_stat_grid_flow
             self.editable = True
 
-    def update_mook(self, text):
-        self.debug(text)
+        self.debug(f'Mook Editable: {self.editable}')
+        return self.editable
+
+    def update_mook(self, object, num):
+        self.debug(f'{object.caption}: {num}')
+        if num == '':
+            return
+        if 'INT' in object.caption:
+            self.mook.stats.INT = int(num)
+        if 'REF' in object.caption:
+            self.mook.stats.REF = int(num)
+        if 'DEX' in object.caption:
+            self.mook.stats.DEX = int(num)
+        if 'TECH' in object.caption:
+            self.mook.stats.TECH = int(num)
+        if 'COOL' in object.caption:
+            self.mook.stats.COOL = int(num)
+        if 'WILL' in object.caption:
+            self.mook.stats.WILL = int(num)
+        if 'LUCK' in object.caption:
+            self.mook.stats.LUCK = int(num)
+        if 'MOVE' in object.caption:
+            self.mook.stats.MOVE = int(num)
+        if 'BODY' in object.caption:
+            self.mook.stats.BODY = int(num)
+        if 'EMP' in object.caption:
+            self.mook.stats.EMP = int(num)
+
+        self.mook.hp = self.mook.stats.max_hp
+        self.secondary_stats_component.original_widget = self.generate_secondary_stats_contents()
+
+        self.debug(self.mook.__dict__)
+
+
 
 

@@ -15,7 +15,7 @@ class MookListBox(urwid.ListBox):
     def create_mook_list_button(self, text):
         w = SkillButton(text, on_press=self.press_button)
         w.set_label_center()
-        w = urwid.AttrWrap(w, 'mook_list_text')
+        w = urwid.AttrWrap(w, 'mook_list_text', 'button_focus')
         return w
 
     def press_button(self, button):

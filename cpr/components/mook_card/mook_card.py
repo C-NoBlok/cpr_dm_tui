@@ -2,10 +2,10 @@ import urwid
 from random import randint
 import uuid
 
-from cpr.components.mook_card.stats_component import Stats
+from cpr.components.mook_card.stats import Stats
 
-from cpr.components.mook_card.combat_component import CombatZone
-from cpr.components.mook_card.skills_component import SkillList
+from cpr.components.mook_card.combat import CombatZone
+from cpr.components.mook_card.skills import SkillList
 from cpr.components.box_button import BoxButton
 
 
@@ -27,6 +27,7 @@ class MookCard(urwid.WidgetWrap):
 
         self.delete_button = BoxButton('X', on_press=self.close_card)
         self.min_max = BoxButton('-', on_press=self.collapse)
+        self.edit_save_button = BoxButton('edit', on_press=self.toggle_editable)
 
         self.mook = mook_obj
         self.stats = Stats(self.mook, self.event_handler, self.debug)
@@ -40,19 +41,22 @@ class MookCard(urwid.WidgetWrap):
             urwid.Divider('-'),
             SkillList(self.mook, self.roll),
             urwid.Divider('-'),
-            self.special_widget
+            urwid.Columns([
+                self.special_widget,
+                (10, self.edit_save_button)
+            ])
         ])
 
         self.main_placeholder = urwid.WidgetPlaceholder(self.main_content)
 
         self.pile = urwid.Pile([
             urwid.Columns([
-                self.stats.main_stats_component(),
+                self.stats.main_stats_component,
                 (12, self.create_min_max_delete_buttons())
                 ]
             ),
             urwid.Divider('-'),
-            self.stats.secondary_stats_component(),
+            self.stats.secondary_stats_component,
             self.main_placeholder
         ])
         self.line_box = urwid.LineBox(self.pile,
@@ -70,6 +74,13 @@ class MookCard(urwid.WidgetWrap):
             (5, self.min_max),
             (5, self.delete_button)
         ])
+
+    def toggle_editable(self, button):
+        self.debug('making_editable')
+        if self.stats.toggle_editable():
+            self.edit_save_button.label.set_text('Save')
+        else:
+            self.edit_save_button.label.set_text('Edit')
 
     def collapse(self, button):
         self.debug('colapsing card.')
