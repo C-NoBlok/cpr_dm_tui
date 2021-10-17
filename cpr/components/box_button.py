@@ -5,8 +5,8 @@ class BoxButton(urwid.WidgetWrap):
     """ Taken from https://stackoverflow.com/a/65871001/778272
     """
     def __init__(self, label, on_press):
-        label_widget = urwid.Text(label, align='center')
-        self.widget = urwid.LineBox(label_widget)
+        self.label = urwid.Text(label, align='center')
+        self.widget = urwid.LineBox(self.label)
         self.hidden_button = urwid.Button('hidden button', on_press)
         super(BoxButton, self).__init__(self.widget)
 

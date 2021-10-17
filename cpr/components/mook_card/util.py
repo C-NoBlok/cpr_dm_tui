@@ -1,5 +1,5 @@
 import urwid
-from cpr.components.mook_card.skill_button import SkillButton
+from cpr.components.skill_button import SkillButton
 
 
 def create_skill_buttons(mook, skills, col1_width=25, col2_width=6, on_press=None, is_weapon=False):

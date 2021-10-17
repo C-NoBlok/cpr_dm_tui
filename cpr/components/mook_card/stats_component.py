@@ -31,7 +31,7 @@ def generate_stats_grid_contents(mook, callback=None):
 
 def generate_secondary_stats_grid_contents(mook, callback=None):
     contents = [
-        urwid.IntEdit(f'    Hit Points: {mook.hp}'),
+        urwid.IntEdit(f'    Hit Points: ', default=mook.hp),
 
         urwid.Pile([urwid.Text(f'Seriously Wounded: {mook.seriously_wounded}'),
                     urwid.IntEdit('Death Save: ', mook.death_save)]),

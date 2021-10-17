@@ -6,9 +6,11 @@ from cpr.components.mook_card.stats_component import generate_stats_grid_content
     generate_secondary_stats_grid_contents
 from cpr.components.mook_card.combat_component import CombatZone
 from cpr.components.mook_card.skills_component import SkillList
+from cpr.components.box_button import BoxButton
 
 
 class MookCard(urwid.WidgetWrap):
+
 
     def __init__(self, mook_obj, event_handler, debug, alt_style=False):
         self.id = uuid.uuid1()
@@ -21,29 +23,33 @@ class MookCard(urwid.WidgetWrap):
         self.v_sep = 1
         self.align = 'center'
 
-        self.mook = mook_obj
+        self.is_collapsed = False
 
-        # self.weapons_armor_cols = urwid.Columns(
-        #     self.generate_weapons_armor_combat_content()
-        # )
+        self.mook = mook_obj
 
         self.special_widget = \
             urwid.Text('Special: ' + ', '.join(self.mook.special))
 
-        self.pile = urwid.Pile([
-            urwid.Columns([
-                generate_stats_grid_contents(self.mook),
-                (5, urwid.Button('X', on_press=self.close_card))
-                ]
-            ),
-            urwid.Divider('-'),
-            generate_secondary_stats_grid_contents(self.mook),
+        self.main_content = urwid.Pile([
             urwid.Divider('-'),
             CombatZone(self.mook, self.roll, debug=self.debug),
             urwid.Divider('-'),
             SkillList(self.mook, self.roll),
             urwid.Divider('-'),
-            self.special_widget,
+            self.special_widget
+        ])
+
+        self.main_placeholder = urwid.WidgetPlaceholder(self.main_content)
+
+        self.pile = urwid.Pile([
+            urwid.Columns([
+                generate_stats_grid_contents(self.mook),
+                (12, self.create_min_max_delete_buttons())
+                ]
+            ),
+            urwid.Divider('-'),
+            generate_secondary_stats_grid_contents(self.mook),
+            self.main_placeholder
         ])
         self.line_box = urwid.LineBox(self.pile,
                                       title=self.mook.name,
@@ -54,6 +60,25 @@ class MookCard(urwid.WidgetWrap):
             self.line_box = urwid.AttrMap(self.line_box, 'card')
 
         super().__init__(self.line_box)
+
+    def create_min_max_delete_buttons(self):
+        self.delete_button = BoxButton('X', on_press=self.close_card)
+        self.min_max = BoxButton('-', on_press=self.collapse)
+        return urwid.Columns([
+            (5, self.min_max),
+            (5, self.delete_button)
+        ])
+
+    def collapse(self, button):
+        self.debug('colapsing card.')
+        if self.is_collapsed:
+            self.main_placeholder.original_widget = self.main_content
+            self.min_max.label.set_text('-')
+            self.is_collapsed = False
+        else:
+            self.main_placeholder.original_widget = urwid.Divider('/')
+            self.min_max.label.set_text('+')
+            self.is_collapsed = True
 
     def close_card(self, button):
         self.debug('Closing Card...')

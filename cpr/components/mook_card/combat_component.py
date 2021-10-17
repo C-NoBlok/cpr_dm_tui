@@ -3,6 +3,7 @@ import urwid
 from urwid import raw_display
 
 from cpr.components.mook_card.util import create_skill_buttons
+from cpr.components.mook_card.skill_label_button import SkillLabelButton
 
 screen = raw_display.Screen()
 
@@ -68,7 +69,8 @@ class CombatZone(urwid.WidgetWrap):
                                           v_seperation,
                                           align)
 
-        self.c_skills_button = urwid.Button('Combat Skills', on_press=self.toggle_combat_skills)
+        self.c_skills_button = SkillLabelButton('Combat Skills', on_press=self.toggle_combat_skills)
+
         self.combat_elem = urwid.Columns([
             (17, self.c_skills_button),
             (1, urwid.Text(' ')),

@@ -2,7 +2,7 @@ import urwid
 from cpr.components.mook_card import MookCard
 
 
-class MookRoster(urwid.LineBox):
+class MookRoster(urwid.WidgetWrap):
 
     def __init__(self, event_handler, debug):
         self.debug = debug
@@ -30,6 +30,11 @@ class MookRoster(urwid.LineBox):
         self.debug(f'Removing {mook_card.mook.name} from roster')
         # self.debug(self.mook_roster.body)
         for card in self.mook_roster.body:
-            if card.original_widget.id == mook_card.id:
-                self.mook_roster.body.remove(card)
+            try:
+                if card.original_widget.id == mook_card.id:
+                    self.mook_roster.body.remove(card)
+            except AttributeError:
+                if card.id == mook_card.id:
+                    self.mook_roster.body.remove(card)
+
 
