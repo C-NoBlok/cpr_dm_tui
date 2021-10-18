@@ -13,7 +13,7 @@ v_seperation = 0
 align = 'left'
 
 
-class CombatZone(urwid.WidgetWrap):
+class CombatZone(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
     def __init__(self, mook, roll_function, debug=None):
         self.mook = mook
@@ -37,7 +37,7 @@ class CombatZone(urwid.WidgetWrap):
                                               is_weapon=True)
         _contents = urwid.Columns([
             (10, urwid.Text('Weapons: ')),
-            urwid.Pile(weapon_buttons)
+            urwid.GridFlow(weapon_buttons, 60, 1, 0, 'left')
         ])
         return urwid.LineBox(_contents)
 

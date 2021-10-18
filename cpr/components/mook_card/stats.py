@@ -81,22 +81,20 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         secondary_stat_contents = [
             hp_edit,
             urwid.Pile([urwid.Text(f'Seriously Wounded: {self.mook.seriously_wounded}'),
-                        urwid.IntEdit('Death Save: ', self.mook.death_save)]),
+                        self.wrap_int_edit(urwid.IntEdit('Death Save: ', self.mook.death_save))]),
             self.create_armor_widget()
         ]
         grid = urwid.GridFlow(secondary_stat_contents, 23, 1, 0, 'left')
         return grid
 
-    # def keypress(self, size, key):
-    #     return key
 
     def create_armor_widget(self):
         armor_elem = urwid.Columns([
             (9, urwid.Text("Armor: ")),
             (9, urwid.Pile(
                 [
-                    urwid.IntEdit('Head: ', self.mook.armor[-1]),
-                    urwid.IntEdit('Body: ', self.mook.armor[0])
+                    self.wrap_int_edit(urwid.IntEdit('Head: ', self.mook.armor[-1])),
+                    self.wrap_int_edit(urwid.IntEdit('Body: ', self.mook.armor[0]))
                 ]
             ))
         ])

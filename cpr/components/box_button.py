@@ -8,6 +8,7 @@ class BoxButton(urwid.WidgetWrap):
         self.label = urwid.Text(label, align='center')
         self.widget = urwid.LineBox(self.label)
         self.hidden_button = urwid.Button('hidden button', on_press)
+        self.widget._selectable = True
         super(BoxButton, self).__init__(self.widget)
 
     def selectable(self):

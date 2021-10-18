@@ -17,6 +17,7 @@ class Weapon:
 @dataclass
 class MeleeWeapon(Weapon):
     melee_weapon_type: str
+    skill = 'melee weapon'
 
 @dataclass
 class RangedWeapon(Weapon):

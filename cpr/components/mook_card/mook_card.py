@@ -31,21 +31,20 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
         self.mook = mook_obj
         self.stats = Stats(self.mook, self.event_handler, self.debug)
+        self.combat_zone = CombatZone(self.mook, self.roll, debug=self.debug)
+        self.skills = SkillList(self.mook, self.roll)
 
         self.special_widget = \
-            urwid.Text('Special: ' + ', '.join(self.mook.special))
+            urwid.Edit('Special: ' + ', '.join(self.mook.special))
 
         self.main_content = urwid.Pile([
             urwid.Divider('-'),
-            CombatZone(self.mook, self.roll, debug=self.debug),
+            self.combat_zone,
             urwid.Divider('-'),
-            SkillList(self.mook, self.roll),
+            self.skills,
             urwid.Divider('-'),
-            urwid.Columns([
-                self.special_widget,
-                (10, self.edit_save_button)
+            self.special_widget,
             ])
-        ])
 
         self.main_placeholder = urwid.WidgetPlaceholder(self.main_content)
 
@@ -71,10 +70,13 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         super().__init__(self.line_box)
 
     def create_min_max_delete_buttons(self):
-        return urwid.Columns([
-            (5, self.min_max),
-            (5, self.delete_button)
-        ])
+        return urwid.Pile(
+            [urwid.Columns([
+                (5, self.min_max),
+                (5, self.delete_button)
+            ]),
+                self.edit_save_button]
+        )
 
     def toggle_editable(self, button):
         self.debug('making_editable')
@@ -126,6 +128,13 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             return
 
         unhandled = self.stats.keypress(size, key)
+        if unhandled:
+            unhandled = self.combat_zone.keypress(size, key)
+        if unhandled:
+            unhandled = self.skills.keypress(size, key)
+        # if unhandled:
+        #     unhandled = self.special_widget.keypress(size, key)
+
         return unhandled
 
 
