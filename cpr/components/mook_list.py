@@ -5,7 +5,7 @@ from cpr.components.util import find_signal_object
 
 import urwid
 
-class MookList(urwid.LineBox):
+class MookList(urwid.LineBox, urwid.WidgetContainerMixin):
 
     signals = ['clicked']
 

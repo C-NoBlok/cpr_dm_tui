@@ -2,7 +2,7 @@ import urwid
 from cpr.components.mook_card import MookCard
 
 
-class MookRoster(urwid.WidgetWrap):
+class MookRoster(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
     def __init__(self, event_handler, debug):
         self.debug = debug

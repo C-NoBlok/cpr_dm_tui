@@ -9,7 +9,7 @@ from cpr.components.mook_card.skills import SkillList
 from cpr.components.box_button import BoxButton
 
 
-class MookCard(urwid.WidgetWrap):
+class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
 
     def __init__(self, mook_obj, event_handler, debug, alt_style=False):
@@ -51,21 +51,22 @@ class MookCard(urwid.WidgetWrap):
 
         self.pile = urwid.Pile([
             urwid.Columns([
-                self.stats.main_stats_component,
+                self.stats,
                 (12, self.create_min_max_delete_buttons())
                 ]
             ),
-            urwid.Divider('-'),
-            self.stats.secondary_stats_component,
             self.main_placeholder
         ])
         self.line_box = urwid.LineBox(self.pile,
                                       title=self.mook.name,
                                       title_align='left')
         if alt_style:
-            self.line_box = urwid.AttrMap(self.line_box, 'card_alt')
+            self.line_box = urwid.AttrMap(self.line_box, 'card_alt', 'card_focus')
         else:
-            self.line_box = urwid.AttrMap(self.line_box, 'card')
+            self.line_box = urwid.AttrMap(self.line_box, 'card', 'card_focus')
+
+        self.line_box._command_map['e'] = lambda *args: self.roll('evasion')
+        self._selectable = True
 
         super().__init__(self.line_box)
 
@@ -81,6 +82,53 @@ class MookCard(urwid.WidgetWrap):
             self.edit_save_button.label.set_text('Save')
         else:
             self.edit_save_button.label.set_text('Edit')
+
+    def keypress(self, size, key):
+        if key == 'e':
+            self.roll('evasion')
+            return
+        if key == 'p':
+            self.roll('perception')
+            return
+        if key == 'a':
+            self.roll('athletics')
+            return
+        if key == 'b':
+            self.roll('brawling')
+            return
+        if key == 'm':
+            self.roll('melee weapon')
+            return
+        if key == 'h':
+            self.roll('handgun')
+            return
+        if key == 's':
+            self.roll('shoulder arms')
+            return
+        if key == 'H':
+            self.roll('heavyaaaa weapons')
+            return
+        try:
+            if key == 'meta 1':
+                self.roll(self.mook.weapons[0].name)
+                return
+            if key == 'meta 2':
+                self.roll(self.mook.weapons[1].name)
+                return
+            if key == 'meta 3':
+                self.roll(self.mook.weapons[2].name)
+                return
+            if key == 'meta 4':
+                self.roll(self.mook.weapons[3].name)
+                return
+        except IndexError:
+            self.debug(f'No Item Equiped in Slot {key}')
+            return
+
+        unhandled = self.stats.keypress(size, key)
+        return unhandled
+
+
 
     def collapse(self, button):
         self.debug('colapsing card.')
@@ -104,14 +152,21 @@ class MookCard(urwid.WidgetWrap):
         if roll == 1:
             roll -= randint(1, 10)
 
-        if button.label in self.mook.skills:
-            check = roll + self.mook.skills[button.label]
-            check_str = f'{button.label} check: {check}'
+        if isinstance(button, urwid.Widget):
+            skill_label = button.label
+        elif isinstance(button, str):
+            skill_label = button
+        else:
+            raise TypeError('button is not of type: String, urwid.Button')
+
+        if skill_label in self.mook.skills:
+            check = roll + self.mook.skills[skill_label]
+            check_str = f'{skill_label} check: {check}'
             self.debug(check_str)
             return check_str
 
-        elif button.label in self.mook.weapons_by_name:
-            weapon = self.mook.weapons_by_name[button.label]
+        elif skill_label in self.mook.weapons_by_name:
+            weapon = self.mook.weapons_by_name[skill_label]
             check = roll + self.mook.skills[weapon.skill]
 
             dmg = 0
@@ -121,7 +176,7 @@ class MookCard(urwid.WidgetWrap):
                 dmg += roll
                 roll_list.append(roll)
 
-            check_str = f'{button.label} attack: {check} || Damage: {roll_list} -> {dmg}'
+            check_str = f'{skill_label} attack: {check} || Damage: {roll_list} -> {dmg}'
             self.debug(check_str)
             return check_str
 

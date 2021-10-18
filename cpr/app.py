@@ -33,6 +33,8 @@ pallete_256 = [
     ('box_button', '', '', '', 'g95', 'g15'),
     ('mook_list_text', '', '', '', 'g95', 'g15'),
     ('button_focus', '', '', 'bold', 'g0', 'h196'),
+    ('card_focus', '', '', '', 'h15', 'h1'),
+    ('edit_focus', '', '', '', 'g15', 'h1')
     # ('hit_points',)
     # ('hit_points_serious',)
 ]
@@ -46,7 +48,8 @@ pallete_256 = [
 'strikethrough'
 """
 
-class MainWidget(urwid.WidgetWrap):
+
+class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
     def __init__(self):
 
