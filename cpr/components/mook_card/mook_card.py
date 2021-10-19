@@ -12,7 +12,6 @@ from cpr.components.emoji_map import pencil, floppy_disk
 
 class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
-
     def __init__(self, mook_obj, event_handler, debug, alt_style=False):
         self.id = uuid.uuid1()
         self.event_handler = event_handler
@@ -113,15 +112,6 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             return
 
         return self.pile.keypress(size, key)
-
-        # unhandled = self.stats.keypress(size, key)
-        # if unhandled:
-        #     unhandled = self.combat_zone.keypress(size, key)
-        # if unhandled:
-        #     unhandled = self.skills.keypress(size, key)
-        # # if unhandled:
-        # #     unhandled = self.special_widget.keypress(size, key)
-
 
     def collapse(self, button):
         self.debug('colapsing card.')

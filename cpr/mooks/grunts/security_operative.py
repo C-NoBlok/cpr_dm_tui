@@ -17,7 +17,7 @@ security_operative = Mook(
         EMP=3
     ),
     weapons=[very_heavy_pistol],
-    armor=(11, 11),
+    armor={'head': 11, 'body': 11},
     skills={
         'athletics': 11,
         'basic tech': 12,

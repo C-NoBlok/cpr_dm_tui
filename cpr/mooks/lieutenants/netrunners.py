@@ -17,7 +17,7 @@ Netrunner = Mook(
         EMP=4
     ),
     weapons=[very_heavy_pistol],
-    armor=(11, 11),
+    armor={'head': 11, 'body': 11},
     skills={
         'athletics': 9,
         'basic tech': 13,

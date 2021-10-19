@@ -120,6 +120,9 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
 def start_app():
     main = MainWidget()
-    loop = urwid.MainLoop(main, unhandled_input=main.unhandled_input, pop_ups=True, palette=pallete_256)
+    loop = urwid.MainLoop(main,
+                          unhandled_input=main.unhandled_input,
+                          pop_ups=True,
+                          palette=pallete_256)
     loop.screen.set_terminal_properties(colors=256)
     loop.run()

@@ -25,7 +25,7 @@ class Mook:
     mook_type: str
     stats: Stats
     weapons: list
-    armor: tuple
+    armor: dict
     skills: dict
     special: dict
 
@@ -35,7 +35,7 @@ class Mook:
         self.mook_type = mook_type
         self.stats = stats
         self.weapons = weapons
-        self.armor = armor
+        self.armor = armor  # should probably be a dictionary
         self.skills = skills
         self.special = special
         self.hp = self.stats.max_hp
@@ -57,13 +57,13 @@ class Mook:
 
     @property
     def combat_skills(self):
-        return { k:v for k,v in self.skills.items()
+        return {k: v for k,v in self.skills.items()
                 if k in self.combat_skills_list }
 
     @property
     def non_combat_skills(self):
-        return { k:v for k,v in self.skills.items()
-                if k not in self.combat_skills_list }
+        return {k: v for k,v in self.skills.items()
+                if k not in self.combat_skills_list}
 
     @property
     def weapons_by_name(self):

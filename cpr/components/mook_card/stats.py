@@ -1,5 +1,7 @@
 import urwid
 
+from cpr.components.mook_card.damage import TakeDamageDialog
+
 
 class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
     def __init__(self, mook, event_handler, debug):
@@ -13,15 +15,13 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.v_seperation =1
         self.align = 'left'
 
-
-
         self.secondary_stats_component = urwid.WidgetPlaceholder(self.generate_secondary_stats_contents())
         self.main_placeholder = urwid.WidgetPlaceholder(self.generate_primary_stats_content())
 
         super().__init__(urwid.Pile([
             self.main_placeholder,
             urwid.Divider('-'),
-            self.secondary_stats_component
+            self.secondary_stats_component,
             ])
         )
 
@@ -78,8 +78,9 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
     def generate_secondary_stats_contents(self):
         hp_edit = self.wrap_int_edit(urwid.IntEdit(f'    Hit Points: ', default=self.mook.hp))
+        take_damage_button = urwid.Button('Take Damage', on_press=self.take_damage_dialog)
         secondary_stat_contents = [
-            hp_edit,
+            urwid.Pile([hp_edit, take_damage_button]),
             urwid.Pile([urwid.Text(f'Seriously Wounded: {self.mook.seriously_wounded}'),
                         self.wrap_int_edit(urwid.IntEdit('Death Save: ', self.mook.death_save))]),
             self.create_armor_widget()
@@ -87,14 +88,13 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         grid = urwid.GridFlow(secondary_stat_contents, 23, 1, 0, 'left')
         return grid
 
-
     def create_armor_widget(self):
         armor_elem = urwid.Columns([
             (9, urwid.Text("Armor: ")),
             (9, urwid.Pile(
                 [
-                    self.wrap_int_edit(urwid.IntEdit('Head: ', self.mook.armor[-1])),
-                    self.wrap_int_edit(urwid.IntEdit('Body: ', self.mook.armor[0]))
+                    self.wrap_int_edit(urwid.IntEdit('Head: ', self.mook.armor['head'])),
+                    self.wrap_int_edit(urwid.IntEdit('Body: ', self.mook.armor['body']))
                 ]
             ))
         ])
@@ -148,6 +148,30 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.secondary_stats_component.original_widget = self.generate_secondary_stats_contents()
 
         self.debug(self.mook.__dict__)
+
+    def take_damage_dialog(self, button):
+        self.debug('OUCH!!!')
+        dmg_dialog = TakeDamageDialog()
+        self.main_placeholder.original_widget = dmg_dialog
+        urwid.connect_signal(dmg_dialog, 'close', self.close_take_damage_dialog)
+        self._w.set_focus(0)
+
+    def close_take_damage_dialog(self, dmg_dialog: TakeDamageDialog):
+        piece_ablated = 'body' if dmg_dialog.body.state else 'head'
+        damage = dmg_dialog.damage_amount.value()
+        ablate_by = dmg_dialog.ablate_by.value()
+
+        damage_taken = damage - self.mook.armor[piece_ablated]
+        self.mook.hp -= damage_taken
+        self.mook.armor[piece_ablated] -= ablate_by
+
+        self.debug(f'Damage Taken: {damage_taken}\n'
+                   f'{piece_ablated} armor ablated by: {ablate_by}')
+
+        self.main_placeholder.original_widget = self.generate_primary_stats_content()
+        self.secondary_stats_component.original_widget = self.generate_secondary_stats_contents()
+
+
 
 
 

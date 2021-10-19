@@ -17,7 +17,7 @@ Bodyguard = Mook(
         EMP=2
     ),
     weapons=[poor_quality_shotgun, very_heavy_pistol],
-    armor=(6,7),
+    armor={'head': 7, 'body': 7},
     skills={
         'handgun': 9,
         'brawling': 10,
