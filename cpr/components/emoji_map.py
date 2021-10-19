@@ -13,4 +13,6 @@ mobile_phone = '\U0001F4F1'
 floppy_disk = '\U0001F4BE'
 plus = u'\U00002795'
 floppy_disk = u'\U0001F4BE'
+pencil = u'\U0001F589'
+
 

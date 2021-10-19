@@ -7,6 +7,7 @@ from cpr.components.mook_card.stats import Stats
 from cpr.components.mook_card.combat import CombatZone
 from cpr.components.mook_card.skills import SkillList
 from cpr.components.box_button import BoxButton
+from cpr.components.emoji_map import pencil, floppy_disk
 
 
 class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
@@ -25,9 +26,11 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
         self.is_collapsed = False
 
-        self.delete_button = BoxButton('X', on_press=self.close_card)
-        self.min_max = BoxButton('-', on_press=self.collapse)
-        self.edit_save_button = BoxButton('edit', on_press=self.toggle_editable)
+        self.delete_button = urwid.Button('X', on_press=self.close_card)
+        self.min_max = urwid.Button('-', on_press=self.collapse)
+        self.edit_save_button = urwid.Button('edit', on_press=self.toggle_editable)
+        self.edit_save_button = urwid.AttrWrap(self.edit_save_button, 'button', 'button_focus')
+        self.edit_save_button = urwid.AttrWrap(self.edit_save_button, 'center')
 
         self.mook = mook_obj
         self.stats = Stats(self.mook, self.event_handler, self.debug)
@@ -75,79 +78,60 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
                 (5, self.min_max),
                 (5, self.delete_button)
             ]),
-                self.edit_save_button]
+                urwid.Padding(self.edit_save_button, align='center', width=('relative', 65))]
         )
 
     def toggle_editable(self, button):
         self.debug('making_editable')
         if self.stats.toggle_editable():
-            self.edit_save_button.label.set_text('Save')
+            self.edit_save_button._label.set_text('Save')
         else:
-            self.edit_save_button.label.set_text('Edit')
+            self.edit_save_button._label.set_text('Edit')
 
     def keypress(self, size, key):
-        if key == 'e':
-            self.roll('evasion')
-            return
-        if key == 'p':
-            self.roll('perception')
-            return
-        if key == 'a':
-            self.roll('athletics')
-            return
-        if key == 'b':
-            self.roll('brawling')
-            return
-        if key == 'm':
-            self.roll('melee weapon')
-            return
-        if key == 'h':
-            self.roll('handgun')
-            return
-        if key == 's':
-            self.roll('shoulder arms')
-            return
-        if key == 'H':
-            self.roll('heavyaaaa weapons')
-            return
+        self.debug(f'card key: {key}')
+        card_key_funcs = {
+            'e': lambda: self.roll('evasion'),
+            'p': lambda: self.roll('perception'),
+            'a': lambda: self.roll('athletics'),
+            'b': lambda: self.roll('brawling'),
+            'm': lambda: self.roll('melee weapon'),
+            'h': lambda: self.roll('handgun'),
+            's': lambda: self.roll('shoulder arms'),
+            'H': lambda: self.roll('heavy weapons'),
+            'meta 1': lambda: self.roll(self.mook.weapons[0].name),
+            'meta 2': lambda: self.roll(self.mook.weapons[1].name),
+            'meta 3': lambda: self.roll(self.mook.weapons[2].name),
+            'meta 4': lambda: self.roll(self.mook.weapons[3].name),
+        }
         try:
-            if key == 'meta 1':
-                self.roll(self.mook.weapons[0].name)
-                return
-            if key == 'meta 2':
-                self.roll(self.mook.weapons[1].name)
-                return
-            if key == 'meta 3':
-                self.roll(self.mook.weapons[2].name)
-                return
-            if key == 'meta 4':
-                self.roll(self.mook.weapons[3].name)
+            if key in card_key_funcs:
+                card_key_funcs[key]()
                 return
         except IndexError:
             self.debug(f'No Item Equiped in Slot {key}')
             return
 
-        unhandled = self.stats.keypress(size, key)
-        if unhandled:
-            unhandled = self.combat_zone.keypress(size, key)
-        if unhandled:
-            unhandled = self.skills.keypress(size, key)
+        return self.pile.keypress(size, key)
+
+        # unhandled = self.stats.keypress(size, key)
         # if unhandled:
-        #     unhandled = self.special_widget.keypress(size, key)
-
-        return unhandled
-
+        #     unhandled = self.combat_zone.keypress(size, key)
+        # if unhandled:
+        #     unhandled = self.skills.keypress(size, key)
+        # # if unhandled:
+        # #     unhandled = self.special_widget.keypress(size, key)
 
 
     def collapse(self, button):
         self.debug('colapsing card.')
         if self.is_collapsed:
             self.main_placeholder.original_widget = self.main_content
-            self.min_max.label.set_text('-')
+            self.min_max._label.set_text('-')
             self.is_collapsed = False
         else:
             self.main_placeholder.original_widget = urwid.Divider('/')
-            self.min_max.label.set_text('+')
+            self.min_max._label.set_text('+')
             self.is_collapsed = True
 
     def close_card(self, button):
