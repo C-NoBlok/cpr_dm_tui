@@ -13,8 +13,8 @@ class TakeDamageDialog(urwid.WidgetWrap):
         self.head = urwid.RadioButton(armor_group, 'Head', False)
         self.body = urwid.RadioButton(armor_group, 'Body', True)
 
-        accept_button = urwid.Button('Accept', on_press=lambda btn: self._emit('close'))
-        close_button = urwid.Button("Close", on_press=lambda btn: self._emit('close'))
+        accept_button = urwid.Button('Accept', on_press=lambda btn: self._emit('close', True))
+        close_button = urwid.Button("Close", on_press=lambda btn: self._emit('close', False))
         button_col = urwid.Columns([accept_button, close_button])
 
         self.grid = urwid.GridFlow([
@@ -23,10 +23,13 @@ class TakeDamageDialog(urwid.WidgetWrap):
             accept_button, close_button
         ],
             40, 1, 0, 'center')
-        super().__init__(self.grid)
+        self.line_box = urwid.LineBox(self.grid)
+        self.widget = urwid.AttrMap(self.line_box, 'take_damage')
+
+        super().__init__(self.widget)
 
     def keypress(self, size, key):
         if key == 'enter':
-            self._emit('close')
+            self._emit('close', True)
 
         return self.grid.keypress(size, key)

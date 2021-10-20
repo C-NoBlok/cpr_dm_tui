@@ -88,6 +88,8 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         grid = urwid.GridFlow(secondary_stat_contents, 23, 1, 0, 'left')
         return grid
 
+
+
     def create_armor_widget(self):
         armor_elem = urwid.Columns([
             (9, urwid.Text("Armor: ")),
@@ -156,17 +158,25 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         urwid.connect_signal(dmg_dialog, 'close', self.close_take_damage_dialog)
         self._w.set_focus(0)
 
-    def close_take_damage_dialog(self, dmg_dialog: TakeDamageDialog):
-        piece_ablated = 'body' if dmg_dialog.body.state else 'head'
-        damage = dmg_dialog.damage_amount.value()
-        ablate_by = dmg_dialog.ablate_by.value()
+    def close_take_damage_dialog(self, dmg_dialog: TakeDamageDialog, accept):
+        self.debug(f'Accept Damage: {accept}')
+        if accept:
+            piece_ablated = 'body' if dmg_dialog.body.state else 'head'
+            damage = dmg_dialog.damage_amount.value()
+            ablate_by = dmg_dialog.ablate_by.value()
 
-        damage_taken = damage - self.mook.armor[piece_ablated]
-        self.mook.hp -= damage_taken
-        self.mook.armor[piece_ablated] -= ablate_by
+            damage_taken = damage - self.mook.armor[piece_ablated]
+            if damage_taken > 0:
+                if piece_ablated == 'head':
+                    self.debug("Head Shot! Brutal Double Damage.")
+                    damage_taken = damage_taken * 2
+                self.mook.hp -= damage_taken
+                self.mook.armor[piece_ablated] -= ablate_by
 
-        self.debug(f'Damage Taken: {damage_taken}\n'
-                   f'{piece_ablated} armor ablated by: {ablate_by}')
+                self.debug(f'Damage Taken: {damage_taken}\n... '
+                           f'{piece_ablated} armor ablated by: {ablate_by}')
+            else:
+                self.debug("Armor Stopped all Damage. Lucky!")
 
         self.main_placeholder.original_widget = self.generate_primary_stats_content()
         self.secondary_stats_component.original_widget = self.generate_secondary_stats_contents()

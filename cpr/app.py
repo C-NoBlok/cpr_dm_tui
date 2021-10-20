@@ -7,26 +7,13 @@ screen = raw_display.Screen()
 
 # Pallet tuple -> (name, foreground, background, mono, foreground_high, background_high)
 
-pallete = [
-    ('header', 'dark red', 'light gray',),
-    ('footer', 'dark red', 'light gray',),
-    ('body', 'dark red', 'light gray',),
-    ('title', 'dark red', 'light gray'),
-    ('mook_list', 'dark red', 'light gray'),
-    ('button', 'dark red', 'light gray', 'standout'),
-    ('card', 'dark red', 'black'),
-    ('skill_button', 'white', 'black', 'standout'),
-    ('box_button', 'dark red', 'white'),
-    # ('hit_points',)
-    # ('hit_points_serious',)
-]
 pallete_256 = [
     ('header', '', '', '', 'h196', 'g15'),
     ('footer', '', '', '', 'h196', 'g15'),
     ('body', 'dark red', 'light gray',),
     ('title', 'dark red', 'light gray'),
     ('mook_list', '', '', '', 'h196', 'g15'),
-    ('button', 'dark red', 'light gray'),
+    ('expander_button', '', '', '', 'h196', 'g5'),
     ('card', '', '', '', 'h196', 'g70'),
     ('card_alt', '', '', '', 'h196', 'g80'),
     ('skill_button', '', '', '', 'g100', 'g35'),
@@ -34,7 +21,8 @@ pallete_256 = [
     ('mook_list_text', '', '', '', 'g95', 'g15'),
     ('button_focus', '', '', 'bold', 'g0', 'h196'),
     ('card_focus', '', '', '', 'h15', 'h1'),
-    ('edit_focus', '', '', 'bold', 'g100', 'g35')
+    ('edit_focus', '', '', 'bold', 'g100', 'g35'),
+    ('take_damage', '', '', '', 'h196', 'g15')
     # ('hit_points',)
     # ('hit_points_serious',)
 ]

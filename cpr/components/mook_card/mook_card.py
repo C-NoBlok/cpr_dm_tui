@@ -28,7 +28,7 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.delete_button = urwid.Button('X', on_press=self.close_card)
         self.min_max = urwid.Button('-', on_press=self.collapse)
         self.edit_save_button = urwid.Button('edit', on_press=self.toggle_editable)
-        self.edit_save_button = urwid.AttrWrap(self.edit_save_button, 'button', 'button_focus')
+        self.edit_save_button = urwid.AttrWrap(self.edit_save_button, 'expander_button', 'button_focus')
         self.edit_save_button = urwid.AttrWrap(self.edit_save_button, 'center')
 
         self.mook = mook_obj

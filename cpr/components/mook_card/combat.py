@@ -70,7 +70,7 @@ class CombatZone(urwid.WidgetWrap, urwid.WidgetContainerMixin):
                                           align)
 
         self.c_skills_button = SkillLabelButton('Combat Skills', on_press=self.toggle_combat_skills)
-        self.c_skills_button = urwid.AttrMap(self.c_skills_button, 'button', 'button_focus')
+        self.c_skills_button = urwid.AttrMap(self.c_skills_button, 'expander_button', 'button_focus')
 
         self.combat_elem = urwid.Columns([
             (17, self.c_skills_button),
