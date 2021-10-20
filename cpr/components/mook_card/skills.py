@@ -1,6 +1,6 @@
 import urwid
 
-from cpr.components.mook_card.skill_label_button import SkillLabelButton
+from cpr.components.buttons import SkillLabelButton
 from cpr.components.mook_card.util import create_skill_buttons
 
 

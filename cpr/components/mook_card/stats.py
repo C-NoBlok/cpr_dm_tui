@@ -1,6 +1,8 @@
 import urwid
 
 from cpr.components.mook_card.damage import TakeDamageDialog
+from cpr.components.buttons import TakeDamageButton
+from cpr.components.emoji_map import shield, mechanical_arm, explosion, cowboy
 
 
 class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
@@ -75,10 +77,9 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         edit._selectable = True
         return urwid.AttrMap(edit, '', 'edit_focus')
 
-
     def generate_secondary_stats_contents(self):
         hp_edit = self.wrap_int_edit(urwid.IntEdit(f'    Hit Points: ', default=self.mook.hp))
-        take_damage_button = urwid.Button('Take Damage', on_press=self.take_damage_dialog)
+        take_damage_button = TakeDamageButton(f'{explosion} Take Damage {explosion}', on_press=self.take_damage_dialog)
         secondary_stat_contents = [
             urwid.Pile([hp_edit, take_damage_button]),
             urwid.Pile([urwid.Text(f'Seriously Wounded: {self.mook.seriously_wounded}'),
@@ -88,15 +89,13 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         grid = urwid.GridFlow(secondary_stat_contents, 23, 1, 0, 'left')
         return grid
 
-
-
     def create_armor_widget(self):
         armor_elem = urwid.Columns([
             (9, urwid.Text("Armor: ")),
             (9, urwid.Pile(
                 [
-                    self.wrap_int_edit(urwid.IntEdit('Head: ', self.mook.armor['head'])),
-                    self.wrap_int_edit(urwid.IntEdit('Body: ', self.mook.armor['body']))
+                    self.wrap_int_edit(urwid.IntEdit(f'{cowboy}Head: ', self.mook.armor['head'])),
+                    self.wrap_int_edit(urwid.IntEdit(f'{mechanical_arm}Body: ', self.mook.armor['body']))
                 ]
             ))
         ])

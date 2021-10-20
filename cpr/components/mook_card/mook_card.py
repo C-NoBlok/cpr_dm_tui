@@ -6,7 +6,7 @@ from cpr.components.mook_card.stats import Stats
 
 from cpr.components.mook_card.combat import CombatZone
 from cpr.components.mook_card.skills import SkillList
-from cpr.components.box_button import BoxButton
+from cpr.components.buttons import BoxButton, CardButton
 from cpr.components.emoji_map import pencil, floppy_disk
 
 
@@ -25,11 +25,9 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
         self.is_collapsed = False
 
-        self.delete_button = urwid.Button('X', on_press=self.close_card)
-        self.min_max = urwid.Button('-', on_press=self.collapse)
-        self.edit_save_button = urwid.Button('edit', on_press=self.toggle_editable)
-        self.edit_save_button = urwid.AttrWrap(self.edit_save_button, 'expander_button', 'button_focus')
-        self.edit_save_button = urwid.AttrWrap(self.edit_save_button, 'center')
+        self.delete_button = CardButton('X', on_press=self.close_card)
+        self.min_max = CardButton('-', on_press=self.collapse)
+        self.edit_save_button = CardButton('edit', on_press=self.toggle_editable)
 
         self.mook = mook_obj
         self.stats = Stats(self.mook, self.event_handler, self.debug)
@@ -117,11 +115,11 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.debug('colapsing card.')
         if self.is_collapsed:
             self.main_placeholder.original_widget = self.main_content
-            self.min_max._label.set_text('-')
+            self.min_max.button._label.set_text('-')
             self.is_collapsed = False
         else:
             self.main_placeholder.original_widget = urwid.Divider('/')
-            self.min_max._label.set_text('+')
+            self.min_max.button._label.set_text('+')
             self.is_collapsed = True
 
     def close_card(self, button):

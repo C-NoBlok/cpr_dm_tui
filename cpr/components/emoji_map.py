@@ -12,7 +12,9 @@ brain = '\U0001F9E0'
 mobile_phone = '\U0001F4F1'
 floppy_disk = '\U0001F4BE'
 plus = u'\U00002795'
-floppy_disk = u'\U0001F4BE'
-pencil = u'\U0001F589'
+pencil = u'\U0001F589'  # Two Spaces causes issues
+shield = u'\U0001F6E1'
+explosion = u'\U0001F4A2'
+cowboy = u'\U0001F920'
 
 

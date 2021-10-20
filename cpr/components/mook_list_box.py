@@ -1,6 +1,6 @@
 import urwid
 from cpr.mooks import mooks
-from cpr.components.skill_button import SkillButton
+from cpr.components.buttons import MookListButton
 
 
 class MookListBox(urwid.ListBox):
@@ -13,9 +13,7 @@ class MookListBox(urwid.ListBox):
         super().__init__(body)
 
     def create_mook_list_button(self, text):
-        w = SkillButton(text, on_press=self.press_button)
-        w.set_label_center()
-        w = urwid.AttrWrap(w, 'mook_list_text', 'button_focus')
+        w = MookListButton(text, on_press=self.press_button)
         return w
 
     def press_button(self, button):

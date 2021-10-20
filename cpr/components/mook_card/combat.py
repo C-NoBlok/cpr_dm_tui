@@ -3,7 +3,7 @@ import urwid
 from urwid import raw_display
 
 from cpr.components.mook_card.util import create_skill_buttons
-from cpr.components.mook_card.skill_label_button import SkillLabelButton
+from cpr.components.buttons import SkillLabelButton
 
 screen = raw_display.Screen()
 
