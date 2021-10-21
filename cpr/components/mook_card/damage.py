@@ -26,20 +26,14 @@ class TakeDamageDialog(urwid.WidgetWrap):
             40, 1, 0, 'center')
 
 
-        self.widget = urwid.Columns([
+        self.widget = urwid.GridFlow([
             urwid.Pile([self.damage_amount, self.ablate_by]),
             urwid.Pile([self.head, self.body])
-        ])
+        ], 25, 0, 1, 'center')
         self.pile = urwid.Pile([self.widget,
-                                  urwid.Padding(urwid.Columns([
-                                      (15, accept_button),
-                                      (15, close_button),
-                                      ]), align='center', width=('relative', 75))
-                                  ])
-
-        self.widget = urwid.Padding(self.pile, align='center', width=('relative', 50))
-
-        self.widget = urwid.LineBox(self.widget)
+                                urwid.GridFlow([accept_button, close_button], 15, 1, 2, 'center')
+                                ])
+        self.widget = urwid.LineBox(self.pile)
         self.widget = urwid.AttrMap(self.widget, 'take_damage')
 
         super().__init__(self.widget)
@@ -47,7 +41,7 @@ class TakeDamageDialog(urwid.WidgetWrap):
     def keypress(self, size, key):
         if key.lower() == 'y':
             self._emit('close', True)
-        if key.lower() == 'n':
+        if key.lower() in ['n', 'q', 'c']:
             self._emit('close', False)
 
         return self.pile.keypress(size, key)

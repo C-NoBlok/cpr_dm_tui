@@ -92,7 +92,7 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
     def create_armor_widget(self):
         armor_elem = urwid.Columns([
             (9, urwid.Text("Armor: ")),
-            (9, urwid.Pile(
+            (12, urwid.Pile(
                 [
                     self.wrap_int_edit(urwid.IntEdit(f'{cowboy}Head: ', self.mook.armor['head'])),
                     self.wrap_int_edit(urwid.IntEdit(f'{mechanical_arm}Body: ', self.mook.armor['body']))

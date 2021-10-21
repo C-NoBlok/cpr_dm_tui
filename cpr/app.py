@@ -1,3 +1,5 @@
+import sys
+
 from cpr.components.mook_list import MookList
 from cpr.components.mook_roster import MookRoster
 from cpr.components.widget_pallete import pallete_256
@@ -45,6 +47,9 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
     def unhandled_input(self, key):
         if key[0] in ['mouse release', 'mouse drag']:
             return
+
+        # if key[0] in ['q', 'Q']:
+        #     sys.exit(1)
         self.debug(str(key))
 
     def handle_event(self, action, data):

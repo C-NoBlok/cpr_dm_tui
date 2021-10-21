@@ -81,9 +81,9 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
     def toggle_editable(self, button):
         self.debug('making_editable')
         if self.stats.toggle_editable():
-            self.edit_save_button._label.set_text('Save')
+            self.edit_save_button.button._label.set_text('Save')
         else:
-            self.edit_save_button._label.set_text('Edit')
+            self.edit_save_button.button._label.set_text('Edit')
 
     def keypress(self, size, key):
         self.debug(f'card key: {key}')
