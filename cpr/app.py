@@ -1,4 +1,9 @@
 import sys
+import logging
+from logging import DEBUG
+
+logger = logging.Logger('cpr')
+logger.setLevel(DEBUG)
 
 from cpr.components.mook_list import MookList
 from cpr.components.mook_roster import MookRoster
@@ -32,7 +37,7 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.footer = urwid.AttrMap(self.footer, 'footer')
 
         self.body = urwid.Columns([
-            (19, self.mook_list),
+            (20, self.mook_list),
             self.roster
         ])
         self.body = urwid.AttrMap(self.body, 'body')
@@ -75,7 +80,7 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
         footer_text = orig_text + new_msg
         messages = footer_text.split('\n')
-        if len(messages) > 4:
+        while len(messages) > 4:
             messages.pop(0)
         footer_text = '\n'.join(messages)
         self.footer_text.set_text(footer_text)
@@ -83,9 +88,16 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
 def start_app():
     main = MainWidget()
+    # tmux
     loop = urwid.MainLoop(main,
                           unhandled_input=main.unhandled_input,
-                          pop_ups=True,
                           palette=pallete_256)
     loop.screen.set_terminal_properties(colors=256)
+
+    # from urwid.curses_display import Screen
+    #
+    # loop = urwid.MainLoop(main,
+    #                       screen=Screen(),
+    #                       unhandled_input=main.unhandled_input)
+
     loop.run()

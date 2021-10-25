@@ -14,10 +14,11 @@ class Weapon:
         print(f'{self.name} hits for {dmg} damage.')
         return dmg
 
+
 @dataclass
 class MeleeWeapon(Weapon):
     melee_weapon_type: str
-    skill = 'melee weapon'
+    skill = 'melee_weapon'
 
 @dataclass
 class RangedWeapon(Weapon):

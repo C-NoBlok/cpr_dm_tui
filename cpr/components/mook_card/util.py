@@ -7,18 +7,17 @@ def create_skill_buttons(mook, skills, col1_width=25, col2_width=6, on_press=Non
     for skill in skills:
 
         if not is_weapon:
-            button_side_text = f' : {mook.skills[skill]}'
+            button_side_text = f' : {skill["rank"] + mook.stats.to_dict()[skill["base_stat"]]}'
+            skill_button = SkillButton(f'{skill["name"]}', on_press=on_press)
         else:
             button_side_text = f' : {mook.weapons_by_name[skill].damage}D6'
+            skill_button = SkillButton(f'{skill}', on_press=on_press)
 
-        skill_button = SkillButton(f'{skill}', on_press=on_press)
         skill_value = urwid.Text(button_side_text)
-        # skill_value = urwid.AttrMap(skill_value, 'highlight')
         skill_cols = urwid.Columns([
             (col1_width, skill_button),
             (col2_width, skill_value)
         ])
-        # skill_cols = urwid.AttrMap(skill_cols, 'skill_button')
         contents.append(skill_cols)
     return contents
 

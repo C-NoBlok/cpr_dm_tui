@@ -1,23 +1,11 @@
 from math import ceil
-from dataclasses import dataclass
+from copy import deepcopy
+from dataclasses import dataclass, asdict
+from typing import Dict
 
-@dataclass
-class Stats:
-    INT: int
-    REF: int
-    DEX: int
-    TECH: int
-    COOL: int
-    WILL: int
-    LUCK: int
-    MOVE: int
-    BODY: int
-    EMP: int
+from cpr.mooks.stats import Stats
+from cpr.mooks.skills import Skills
 
-
-    @property
-    def max_hp(self):
-        return ceil(10 + 5*(self.BODY + self.WILL)/2)
 
 @dataclass
 class Mook:
@@ -29,41 +17,42 @@ class Mook:
     skills: dict
     special: dict
 
-    def __init__(self, name, mook_type, stats, weapons,
-                 armor, skills, special):
-        self.name = name
-        self.mook_type = mook_type
-        self.stats = stats
-        self.weapons = weapons
-        self.armor = armor  # should probably be a dictionary
-        self.skills = skills
-        self.special = special
+    # def __init__(self, name, mook_type, stats, weapons,
+    #              armor, skills, special):
+    #     self.name = name
+    #     self.mook_type = mook_type
+    #     self.stats = stats
+    #     self.weapons = weapons
+    #     self.armor = armor  # should probably be a dictionary
+    #     self.skills = skills
+    #     self.special = special
+
+    def __post_init__(self):
         self.hp = self.stats.max_hp
         self.seriously_wounded = ceil(self.stats.max_hp / 2)
         self.death_save = self.stats.BODY
-
         self.combat_skills_list = [
             'brawling',
             'evasion',
-            'martial arts',
-            'melee weapon',
+            'martial_arts',
+            'melee_weapon',
             'archery',
             'autofire',
             'handgun',
-            'heavy weapons',
-            'shoulder arms',
+            'heavy_weapons',
+            'shoulder_arms',
             'athletics'
         ]
 
     @property
     def combat_skills(self):
-        return {k: v for k,v in self.skills.items()
-                if k in self.combat_skills_list }
+        return {k: v for k, v in self.skills.to_dict().items()
+                if k in self.combat_skills_list and v['rank'] > 0}
 
     @property
     def non_combat_skills(self):
-        return {k: v for k,v in self.skills.items()
-                if k not in self.combat_skills_list}
+        return {k: v for k, v in self.skills.to_dict().items()
+                if k not in self.combat_skills_list and v['rank'] > 0}
 
     @property
     def weapons_by_name(self):
@@ -71,4 +60,18 @@ class Mook:
         for weapon in self.weapons:
             weapons_data[weapon.name] = weapon
         return weapons_data
+
+    def to_dict(self):
+        return asdict(self)
+
+    @staticmethod
+    def from_dict(mook_dict: Dict):
+        stats = mook_dict.pop('stats')
+        skills = mook_dict.pop('skills')
+        skills_obj = deepcopy(Skills())
+        mook = Mook(**mook_dict, stats=Stats(**stats), skills=skills_obj.from_dict(skills))
+        return mook
+
+
+
 

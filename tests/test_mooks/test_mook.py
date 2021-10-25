@@ -4,7 +4,10 @@ from unittest import TestCase
 import os
 print(os.getcwd())
 
-from cpr.mooks.mook import Mook, Stats
+from cpr.mooks.mook import Mook
+from cpr.mooks.stats import Stats
+from cpr.mooks.skills import Skills
+
 
 def create_mook():
     stats = Stats(8,8,8,8,8,8,8,8,8,8)
@@ -14,7 +17,7 @@ def create_mook():
         stats=stats,
         weapons=[],
         armor={},
-        skills={},
+        skills=Skills(),
         special={}
     )
     return mook
@@ -49,16 +52,27 @@ class TestMook(TestCase):
         self.assertIn('brawling', c_skills)
 
     def test_non_combat_skills(self):
-        self.mook.skills = {
+        self.mook.skills = Skills.from_rank_dict({
             'evasion': 10,
-            'melee weapon': 8,
+            'melee_weapon': 8,
             'brawling': 8,
             'acting': 14,
             'riding': 3,
-        }
-
+        })
         c_skills = self.mook.non_combat_skills
         print(c_skills)
         self.assertIsInstance(c_skills, dict)
         self.assertIn('riding', c_skills)
         self.assertNotIn('brawling', c_skills)
+
+    def test_to_dict(self):
+        mook_dump = self.mook.to_dict()
+        print(mook_dump)
+        mook_from_dump = Mook.from_dict(mook_dump)
+        print(self.mook)
+        print(mook_from_dump)
+        self.assertEqual(mook_from_dump, self.mook)
+
+
+
+

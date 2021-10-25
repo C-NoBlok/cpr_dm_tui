@@ -8,7 +8,6 @@ class MookListBox(urwid.ListBox):
     def __init__(self, event_handler, debug):
         self.debug_handler = debug
         self.event_handler = event_handler
-        self.mooks = mooks
         body = urwid.SimpleFocusListWalker(self.get_mook_list())
         super().__init__(body)
 
@@ -21,7 +20,7 @@ class MookListBox(urwid.ListBox):
 
     def get_mook_list(self):
         mook_buttons = []
-        for mook in self.mooks.keys():
+        for mook in mooks.keys():
             mook_buttons.append(
                 self.create_mook_list_button(mook)
             )

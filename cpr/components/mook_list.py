@@ -9,7 +9,7 @@ class MookList(urwid.LineBox, urwid.WidgetContainerMixin):
 
     signals = ['clicked']
 
-    def __init__ (self, event_handler, debug):
+    def __init__(self, event_handler, debug):
 
         self.debug_handler = debug
         self.event_handler = event_handler

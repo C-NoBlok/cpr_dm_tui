@@ -88,14 +88,14 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
     def keypress(self, size, key):
         self.debug(f'card key: {key}')
         card_key_funcs = {
-            'e': lambda: self.roll('evasion'),
-            'p': lambda: self.roll('perception'),
-            'a': lambda: self.roll('athletics'),
-            'b': lambda: self.roll('brawling'),
-            'm': lambda: self.roll('melee weapon'),
-            'h': lambda: self.roll('handgun'),
-            's': lambda: self.roll('shoulder arms'),
-            'H': lambda: self.roll('heavy weapons'),
+            'e': lambda: self.roll('Evasion'),
+            'p': lambda: self.roll('Perception'),
+            'a': lambda: self.roll('Athletics'),
+            'b': lambda: self.roll('Brawling'),
+            'm': lambda: self.roll('Melee Weapon'),
+            'h': lambda: self.roll('Handgun'),
+            's': lambda: self.roll('Shoulder Arms'),
+            'H': lambda: self.roll('Heavy Weapons'),
             'meta 1': lambda: self.roll(self.mook.weapons[0].name),
             'meta 2': lambda: self.roll(self.mook.weapons[1].name),
             'meta 3': lambda: self.roll(self.mook.weapons[2].name),
@@ -140,26 +140,32 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         else:
             raise TypeError('button is not of type: String, urwid.Button')
 
-        if skill_label in self.mook.skills:
-            check = roll + self.mook.skills[skill_label]
+        if skill_label in self.mook.skills.skills_by_name:
+            skill = self.mook.skills.skills_by_name[skill_label]
+            check = roll + skill.rank + self.mook.stats.to_dict()[skill.base_stat]
             check_str = f'{skill_label} check: {check}'
-            self.debug(check_str)
-            return check_str
 
         elif skill_label in self.mook.weapons_by_name:
             weapon = self.mook.weapons_by_name[skill_label]
-            check = roll + self.mook.skills[weapon.skill]
+            check = roll + self.mook.skills.to_dict()[weapon.skill]['rank']
 
             dmg = 0
             roll_list = []
             for i in range(weapon.damage):
-                roll = randint(1,6)
+                roll = randint(1, 6)
                 dmg += roll
                 roll_list.append(roll)
 
             check_str = f'{skill_label} attack: {check} || Damage: {roll_list} -> {dmg}'
-            self.debug(check_str)
-            return check_str
+
+        else:
+            self.debug(f'Could not find instances of: {skill_label}')
+            self.debug(f'{self.mook.skills} -> \n by_name: {self.mook.skills.skills_by_name}')
+            return ''
+
+        check_str = f'Roll: {roll}\n... {check_str}'
+        self.debug(check_str)
+        return check_str
 
     def take_damage(self, button):
         self.debug("I've Been Hit...")

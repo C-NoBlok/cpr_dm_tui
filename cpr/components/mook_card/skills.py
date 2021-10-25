@@ -8,8 +8,8 @@ class SkillList(urwid.Columns):
 
     def __init__(self, mook, callback):
         self.skills_visible = False
-        skill_keys = sorted(mook.non_combat_skills.keys())
-        skills_button_list = create_skill_buttons(mook, skill_keys, on_press=callback, col1_width=20)
+        skill_obj = list(mook.non_combat_skills.values())
+        skills_button_list = create_skill_buttons(mook, skill_obj, on_press=callback, col1_width=20)
         self.skill_grid = urwid.GridFlow(skills_button_list, 28, 1, 0, 'left')
         self.fill = urwid.Divider('/')
         self.placeholder = urwid.WidgetPlaceholder(self.fill)

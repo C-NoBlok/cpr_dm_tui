@@ -1,57 +1,47 @@
-from cpr.mooks.mook import Mook, Stats
+from copy import deepcopy
+from cpr.mooks.mook import Mook
+from cpr.mooks.stats import Stats
+from cpr.mooks.skills import Skills
 from cpr.weapons import poor_quality_shotgun, very_heavy_pistol
 
-security_operative = Mook(
-    name='WIP',
-    mook_type='mini-boss',
-    stats=Stats(
-        INT=5,
-        REF=8,
-        DEX=6,
-        TECH=7,
-        COOL=4,
-        WILL=4,
-        LUCK=0,
-        MOVE=6,
-        BODY=5,
-        EMP=3
-    ),
-    weapons=[very_heavy_pistol],
-    armor={'head': 11, 'body': 11},
-    skills={
-        'athletics': 11,
-        'basic tech': 12,
-        'brawling': 5,
-        'conceal object': 5,
-        'concentration': 8,
-        'conversation': 5,
-        'deduction': 5,
-        'demolition': 13,
-        'drive land': 10,
-        'education': 7,
-        'endurance': 4,
-        'electronics/security tech': 5,
-        'evasion': 13,
-        'first aid': 9,
-        'handgun': 14,
-        'heavy weapons': 14,
-        'human perception': 5,
-        'interrogation': 10,
-        'language (native)': 7,
-        'local expert': 7,
-        'melee weapon': 13,
-        'perception': 12,
-        'persuasion': 6,
-        'resist torture/drug': 14,
-        'shoulder arms': 8,
-        'science (chemistry)': 10,
-        'Streetwise': 8,
-        'stealth': 10,
-        'tactics': 8,
-        'tracking': 10
-    },
-    special=['Flamethrower Ammo', '(Incendiary Shotgun Shells) x8',
-             'VH Pistol Ammo x50', 'Incendiary Grenade x1',
-             'Flashbang Grenade x1', 'Cyberaudio Suite (Level Dampners)',
-             'Cybereye x2 (Anti-Dazzle x2)', 'Nasal Filters']
-)
+
+class SecurityOperative(Mook):
+    def __init__(self):
+        name = 'Security Operative'
+        mook_type = 'grunt'
+        stats = Stats(
+            INT=3,
+            REF=7,
+            DEX=4,
+            TECH=2,
+            COOL=2,
+            WILL=3,
+            LUCK=0,
+            MOVE=3,
+            BODY=5,
+            EMP=3
+        )
+        weapons = [very_heavy_pistol]
+        armor = {'head': 7, 'body': 7}
+        skills = deepcopy(Skills())
+
+        skills.athletics.rank = 8 - stats.__getattribute__(skills.athletics.base_stat)
+        skills.autofire.rank = 10 - stats.__getattribute__(skills.autofire.base_stat)
+        skills.brawling.rank = 6 - stats.__getattribute__(skills.brawling.base_stat)
+        skills.concentration.rank = 7 - stats.__getattribute__(skills.concentration.base_stat)
+        skills.conversation.rank = 5 - stats.__getattribute__(skills.conversation.base_stat)
+        skills.education.rank = 5 - stats.__getattribute__(skills.education.base_stat)
+        skills.evasion.rank = 6 - stats.__getattribute__(skills.evasion.base_stat)
+        skills.first_aid.rank = 4 - stats.__getattribute__(skills.first_aid.base_stat)
+        skills.handgun.rank = 10 - stats.__getattribute__(skills.handgun.base_stat)
+        skills.human_perception.rank = 5 - stats.__getattribute__(skills.human_perception.base_stat)
+        skills.interrogation.rank = 6 - stats.__getattribute__(skills.interrogation.base_stat)
+        skills.perception.rank = 5 - stats.__getattribute__(skills.perception.base_stat)
+        skills.persuasion.rank = 4 - stats.__getattribute__(skills.persuasion.base_stat)
+        skills.melee_weapon.rank = 6 - stats.__getattribute__(skills.melee_weapon.base_stat)
+        skills.resist_torture_drug.rank = 5 - stats.__getattribute__(skills.resist_torture_drug.base_stat)
+        skills.shoulder_arms.rank = 10 - stats.__getattribute__(skills.shoulder_arms.base_stat)
+        skills.stealth.rank = 6 - stats.__getattribute__(skills.stealth.base_stat)
+
+        special = ['Rifle x40', 'VH Pistol Ammo x20', 'Radio Communicator']
+        super().__init__(name, mook_type, stats, weapons, armor, skills, special)

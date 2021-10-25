@@ -55,7 +55,7 @@ class CombatZone(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
     def create_combat_widget(self):
         self.c_skills_visible = False
-        keys = sorted(self.mook.combat_skills.keys())
+        keys = list(self.mook.combat_skills.values())
         self.skill_buttons = create_skill_buttons(self.mook,
                                                   keys,
                                                   on_press=self.roll,

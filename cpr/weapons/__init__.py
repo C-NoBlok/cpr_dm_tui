@@ -6,7 +6,7 @@ poor_quality_shotgun = RangedWeapon(
     concealable=False,
     cost=100,
     ROF=1,
-    skill='shoulder arms',
+    skill='shoulder_arms',
     hands_required=2
 )
 
