@@ -15,9 +15,10 @@ align = 'left'
 
 class CombatZone(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
-    def __init__(self, mook, roll_function, debug=None):
+    def __init__(self, mook, roll_function, event_log, debug=None):
         self.mook = mook
         self.roll = roll_function
+        self.event_log = event_log
         self.debug = debug
 
         super().__init__(self.create_grid_component())

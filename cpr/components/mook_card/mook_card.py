@@ -7,7 +7,8 @@ from cpr.components.mook_card.stats import Stats
 from cpr.components.mook_card.combat import CombatZone
 from cpr.components.mook_card.skills import SkillList
 from cpr.components.buttons import BoxButton, CardButton
-from cpr.components.emoji_map import pencil, floppy_disk
+from cpr.components.emoji_map import pencil, floppy_disk, right_arrow_with_tail
+from cpr.components.event_log import EventLog
 
 
 class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
@@ -16,6 +17,7 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.id = uuid.uuid1()
         self.event_handler = event_handler
         self.debug = debug
+        self.event_log = EventLog(debug=debug)
         # self.debug(urwid.signals.regiser)
 
         self.cell_width = 10
@@ -30,12 +32,13 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.edit_save_button = CardButton('edit', on_press=self.toggle_editable)
 
         self.mook = mook_obj
-        self.stats = Stats(self.mook, self.event_handler, self.debug)
-        self.combat_zone = CombatZone(self.mook, self.roll, debug=self.debug)
+        self.stats = Stats(self.mook, self.event_handler, self.event_log, self.debug)
+        self.combat_zone = CombatZone(self.mook, self.roll,self.event_log, debug=self.debug)
         self.skills = SkillList(self.mook, self.roll)
 
         self.special_widget = \
             urwid.Edit('Special: ' + ', '.join(self.mook.special))
+
 
         self.main_content = urwid.Pile([
             urwid.Divider('-'),
@@ -44,6 +47,7 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             self.skills,
             urwid.Divider('-'),
             self.special_widget,
+            self.event_log
             ])
 
         self.main_placeholder = urwid.WidgetPlaceholder(self.main_content)
@@ -64,7 +68,6 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         else:
             self.line_box = urwid.AttrMap(self.line_box, 'card', 'card_focus')
 
-        self.line_box._command_map['e'] = lambda *args: self.roll('evasion')
         self._selectable = True
 
         super().__init__(self.line_box)
@@ -106,7 +109,7 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
                 card_key_funcs[key]()
                 return
         except IndexError:
-            self.debug(f'No Item Equiped in Slot {key}')
+            self.event_log.event(f'No Item Equiped in Slot {key}')
             return
 
         return self.pile.keypress(size, key)
@@ -116,10 +119,17 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         if self.is_collapsed:
             self.main_placeholder.original_widget = self.main_content
             self.min_max.button._label.set_text('-')
+            self.event_log.max_lines = 5
+            self.event_log.build_widget()
             self.is_collapsed = False
         else:
-            self.main_placeholder.original_widget = urwid.Divider('/')
+            self.main_placeholder.original_widget = urwid.Pile([
+                urwid.Divider('/'),
+                self.event_log
+                ])
             self.min_max.button._label.set_text('+')
+            self.event_log.max_lines = 2
+            self.event_log.build_widget()
             self.is_collapsed = True
 
     def close_card(self, button):
@@ -147,14 +157,18 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
         elif skill_label in self.mook.weapons_by_name:
             weapon = self.mook.weapons_by_name[skill_label]
-            check = roll + self.mook.skills.to_dict()[weapon.skill]['rank']
+            skill = self.mook.skills.to_dict()[weapon.skill]
+            skill_rank = skill['rank']
+            skill_stat = self.mook.stats.to_dict()[skill['base_stat']]
+            self.debug(f'skill: {skill}\n {roll} + {skill_rank} + {skill_stat}')
+            check = roll + skill_rank + skill_stat
 
             dmg = 0
             roll_list = []
             for i in range(weapon.damage):
-                roll = randint(1, 6)
-                dmg += roll
-                roll_list.append(roll)
+                dmg_roll = randint(1, 6)
+                dmg += dmg_roll
+                roll_list.append(dmg_roll)
 
             check_str = f'{skill_label} attack: {check} || Damage: {roll_list} -> {dmg}'
 
@@ -163,28 +177,6 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             self.debug(f'{self.mook.skills} -> \n by_name: {self.mook.skills.skills_by_name}')
             return ''
 
-        check_str = f'Roll: {roll}\n... {check_str}'
-        self.debug(check_str)
+        check_str = f'Roll: {roll} || {check_str}'
+        self.event_log.event(check_str)
         return check_str
-
-    def take_damage(self, button):
-        self.debug("I've Been Hit...")
-        damage_taken = urwid.IntEdit('Damage_taken: ', default=0)
-        ablate_by = urwid.IntEdit('Ablate By: ', default=1)
-        contents = urwid.Pile([
-            damage_taken,
-            ablate_by
-        ])
-
-        # TODO Maybe try using urwid.Overlay with overlay being self (card)
-        pop_up = urwid.PopUpLauncher(contents)
-        pop_up.create_pop_up = lambda *args: contents
-        pop_up.get_pop_up_parameters = lambda *args: {'left': 0,
-                                                     'top':1,
-                                                     'overlay_width':10,
-                                                     'overlay_height': 10}
-        pop_up.open_pop_up()
-        self.debug('is there a pop up?')
-
-
-

@@ -6,8 +6,9 @@ from cpr.components.emoji_map import shield, mechanical_arm, explosion, cowboy
 
 
 class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
-    def __init__(self, mook, event_handler, debug):
+    def __init__(self, mook, event_handler, event_log, debug):
         self.event_handler = event_handler
+        self.event_log = event_log
         self.debug = debug
         self.mook = mook
         self.editable = False
@@ -151,14 +152,13 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.debug(self.mook.__dict__)
 
     def take_damage_dialog(self, button):
-        self.debug('OUCH!!!')
+        self.event_log.event('OUCH!!!')
         dmg_dialog = TakeDamageDialog()
         self.main_placeholder.original_widget = dmg_dialog
         urwid.connect_signal(dmg_dialog, 'close', self.close_take_damage_dialog)
         self._w.set_focus(0)
 
     def close_take_damage_dialog(self, dmg_dialog: TakeDamageDialog, accept):
-        self.debug(f'Accept Damage: {accept}')
         if accept:
             piece_ablated = 'body' if dmg_dialog.body.state else 'head'
             damage = dmg_dialog.damage_amount.value()
@@ -167,15 +167,15 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             damage_taken = damage - self.mook.armor[piece_ablated]
             if damage_taken > 0:
                 if piece_ablated == 'head':
-                    self.debug("Head Shot! Brutal Double Damage.")
+                    self.event_log.event("Head Shot! Brutal Double Damage.")
                     damage_taken = damage_taken * 2
                 self.mook.hp -= damage_taken
                 self.mook.armor[piece_ablated] -= ablate_by
 
-                self.debug(f'Damage Taken: {damage_taken}\n... '
-                           f'{piece_ablated} armor ablated by: {ablate_by}')
+                self.event_log.event(f'Damage Taken: {damage_taken}')
+                self.event_log.event(f'Ablated {piece_ablated} armor by: {ablate_by}')
             else:
-                self.debug("Armor Stopped all Damage. Lucky!")
+                self.event_log.event("Armor Stopped all Damage. Lucky!")
 
         self.main_placeholder.original_widget = self.generate_primary_stats_content()
         self.secondary_stats_component.original_widget = self.generate_secondary_stats_contents()

@@ -8,6 +8,7 @@ logger.setLevel(DEBUG)
 from cpr.components.mook_list import MookList
 from cpr.components.mook_roster import MookRoster
 from cpr.components.widget_pallete import pallete_256
+from cpr.components.event_log import EventLog
 
 import urwid
 from urwid import raw_display
@@ -32,9 +33,7 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             ))
         self.header = urwid.AttrMap(self.header, 'header')
 
-        self.footer_text = urwid.Text('')
-        self.footer = urwid.Pile([self.footer_text])
-        self.footer = urwid.AttrMap(self.footer, 'footer')
+        self.event_log = EventLog(debug=lambda *args: None)
 
         self.body = urwid.Columns([
             (20, self.mook_list),
@@ -45,13 +44,23 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.main_frame = urwid.Frame(
             body=self.body,
             header=self.header,
-            footer=self.footer
+            footer=self.event_log
         )
         super().__init__(self.main_frame)
 
     def unhandled_input(self, key):
         if key[0] in ['mouse release', 'mouse drag']:
             return
+
+        if key == 'tab':
+            self.debug('cycling mook.')
+            current_position = self.roster.mook_roster.body.focus
+            try:
+                next_roster_position = self.roster.mook_roster.body.next_position(current_position)
+            except IndexError:
+                next_roster_position = 0
+            self.debug(next_roster_position)
+            self.roster.mook_roster.body.set_focus(next_roster_position)
 
         # if key[0] in ['q', 'Q']:
         #     sys.exit(1)
@@ -70,20 +79,11 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             for key, value in urwid.signals._signals.__dict__.items():
                 text += f'{key}: {value}\n'
             return text
-
-        if show_signals:
-            self.footer_text.set_text(get_signals())
-
-        orig_text = self.footer_text.get_text()[0]
-
-        new_msg = f'>>> {msg}\n'
-
-        footer_text = orig_text + new_msg
-        messages = footer_text.split('\n')
-        while len(messages) > 4:
-            messages.pop(0)
-        footer_text = '\n'.join(messages)
-        self.footer_text.set_text(footer_text)
+        if not show_signals:
+            self.event_log.event(msg)
+            return
+        else:
+            self.event_log.event(get_signals())
 
 
 def start_app():

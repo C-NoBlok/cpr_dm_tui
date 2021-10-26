@@ -16,6 +16,14 @@ class PipeButton(urwid.Button):
         self.button_right = urwid.Text('|')
         super().__init__(*args, **kwargs)
 
+
+class UpDownButton(urwid.WidgetWrap):
+
+    def __init__(self, label, on_press=None):
+        button = PipeButton(label, on_press=on_press)
+        button._label.set_align_mode('center')
+        super().__init__(button)
+
 class SkillLabelButton(urwid.WidgetWrap):
 
     def __init__(self, label, on_press=None):
