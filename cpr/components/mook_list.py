@@ -1,5 +1,5 @@
 from cpr.components.mook_list_box import MookListBox
-from cpr.components.emoji_map import ogre, plus, floppy_disk
+from cpr.components.unicode_map import ogre, plus, floppy_disk
 from cpr.components.buttons import BoxButton
 from cpr.components.util import find_signal_object
 

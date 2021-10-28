@@ -1,4 +1,4 @@
-from cpr.components.emoji_map import up_triangle, down_triangle
+from cpr.components.unicode_map import up_triangle, down_triangle
 from cpr.components.buttons import UpDownButton
 import urwid
 

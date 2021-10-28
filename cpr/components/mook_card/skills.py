@@ -4,7 +4,7 @@ from cpr.components.buttons import SkillLabelButton
 from cpr.components.mook_card.util import create_skill_buttons
 
 
-class SkillList(urwid.Columns):
+class SkillList(urwid.WidgetWrap):
 
     def __init__(self, mook, callback):
         self.skills_visible = False
@@ -17,10 +17,12 @@ class SkillList(urwid.Columns):
         self.skills_button = SkillLabelButton('--Skills--', on_press=self.toggle_skills)
         self.skills_button = urwid.AttrMap(self.skills_button, 'expander_button', 'button_focus')
 
-        super().__init__([
+        self.widget = urwid.Columns([
             (14, self.skills_button),
             self.placeholder
         ])
+
+        super().__init__(self.widget)
 
     def toggle_skills(self, obj):
         if self.skills_visible:

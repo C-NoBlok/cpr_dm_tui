@@ -3,7 +3,8 @@ from copy import deepcopy
 from cpr.mooks.mook import Mook
 from cpr.mooks.stats import Stats
 from cpr.mooks.skills import Skills
-from cpr.weapons import poor_quality_shotgun, very_heavy_pistol, cattle_prod
+from cpr.weapons import heavy_pistol, flame_thrower, heavy_melee_weapon
+
 
 class Pyro(Mook):
     def __init__(self):
@@ -21,8 +22,8 @@ class Pyro(Mook):
             BODY=5,
             EMP=3
         )
-        weapons=[very_heavy_pistol, cattle_prod]
-        armor={'head': 11, 'body': 11}
+        weapons = [flame_thrower(), heavy_pistol(), heavy_melee_weapon()]
+        armor = {'head': 11, 'body': 11}
         skills = deepcopy(Skills())
         skills.from_rank_dict({
             'athletics': 5,

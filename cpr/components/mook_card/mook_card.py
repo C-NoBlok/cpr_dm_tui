@@ -7,7 +7,7 @@ from cpr.components.mook_card.stats import Stats
 from cpr.components.mook_card.combat import CombatZone
 from cpr.components.mook_card.skills import SkillList
 from cpr.components.buttons import BoxButton, CardButton
-from cpr.components.emoji_map import pencil, floppy_disk, right_arrow_with_tail
+from cpr.components.unicode_map import pencil, floppy_disk, right_arrow_with_tail, double_lines_horizontal
 from cpr.components.event_log import EventLog
 
 
@@ -15,6 +15,7 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
     def __init__(self, mook_obj, event_handler, debug, alt_style=False):
         self.id = uuid.uuid1()
+        self.editable = False
         self.event_handler = event_handler
         self.debug = debug
         self.event_log = EventLog(debug=debug)
@@ -39,14 +40,14 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.special_widget = \
             urwid.Edit('Special: ' + ', '.join(self.mook.special))
 
-
         self.main_content = urwid.Pile([
-            urwid.Divider('-'),
+            urwid.Divider(double_lines_horizontal),
             self.combat_zone,
-            urwid.Divider('-'),
+            urwid.Divider(double_lines_horizontal),
             self.skills,
-            urwid.Divider('-'),
+            urwid.Divider(double_lines_horizontal),
             self.special_widget,
+            urwid.Divider(double_lines_horizontal),
             self.event_log
             ])
 
@@ -83,10 +84,16 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
     def toggle_editable(self, button):
         self.debug('making_editable')
-        if self.stats.toggle_editable():
+        if not self.editable:
+            self.stats.enable_editing()
+            self.combat_zone.enable_editing()
             self.edit_save_button.button._label.set_text('Save')
+            self.editable = True
         else:
+            self.stats.disable_editing()
+            self.combat_zone.disable_editing()
             self.edit_save_button.button._label.set_text('Edit')
+            self.editable = False
 
     def keypress(self, size, key):
         self.debug(f'card key: {key}')
@@ -157,11 +164,12 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
         elif skill_label in self.mook.weapons_by_name:
             weapon = self.mook.weapons_by_name[skill_label]
+            weapon_modifier = weapon.modifier
             skill = self.mook.skills.to_dict()[weapon.skill]
             skill_rank = skill['rank']
             skill_stat = self.mook.stats.to_dict()[skill['base_stat']]
             self.debug(f'skill: {skill}\n {roll} + {skill_rank} + {skill_stat}')
-            check = roll + skill_rank + skill_stat
+            check = roll + skill_rank + skill_stat + weapon_modifier
 
             dmg = 0
             roll_list = []

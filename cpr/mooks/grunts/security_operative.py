@@ -2,7 +2,7 @@ from copy import deepcopy
 from cpr.mooks.mook import Mook
 from cpr.mooks.stats import Stats
 from cpr.mooks.skills import Skills
-from cpr.weapons import poor_quality_shotgun, very_heavy_pistol
+from cpr.weapons import assault_rifle, very_heavy_pistol, medium_melee_weapon
 
 
 class SecurityOperative(Mook):
@@ -21,7 +21,11 @@ class SecurityOperative(Mook):
             BODY=5,
             EMP=3
         )
-        weapons = [very_heavy_pistol]
+        pq_assault_rifle = assault_rifle()
+        pq_assault_rifle.name = 'Poor Quality Assult Rifle'
+        pq_assault_rifle.modifier = -1
+
+        weapons = [pq_assault_rifle, very_heavy_pistol(), medium_melee_weapon()]
         armor = {'head': 7, 'body': 7}
         skills = deepcopy(Skills())
 

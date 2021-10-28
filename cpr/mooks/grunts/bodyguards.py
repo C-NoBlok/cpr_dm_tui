@@ -3,7 +3,7 @@ from copy import deepcopy
 from cpr.mooks.mook import Mook
 from cpr.mooks.stats import Stats
 from cpr.mooks.skills import Skills
-from cpr.weapons import poor_quality_shotgun, very_heavy_pistol
+from cpr.weapons import shotgun, very_heavy_pistol
 
 
 class Bodyguard(Mook):
@@ -22,7 +22,11 @@ class Bodyguard(Mook):
             BODY=6,
             EMP=3
         )
-        weapons = [poor_quality_shotgun, very_heavy_pistol]
+        pq_shotgun = shotgun()
+        pq_shotgun.name = 'Poor Quality Shotgun'
+        pq_shotgun.modifier = -1
+
+        weapons = [pq_shotgun, very_heavy_pistol()]
         armor = {'head': 7, 'body': 7}
 
         # Why does Skills not instantiate a new object?

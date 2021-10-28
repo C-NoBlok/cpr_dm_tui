@@ -3,7 +3,7 @@ from copy import deepcopy
 from cpr.mooks.mook import Mook
 from cpr.mooks.stats import Stats
 from cpr.mooks.skills import Skills, Skill
-from cpr.weapons import poor_quality_shotgun, very_heavy_pistol
+from cpr.weapons import medium_melee_weapon, very_heavy_pistol
 
 
 class BoosterGanger(Mook):
@@ -22,7 +22,12 @@ class BoosterGanger(Mook):
             BODY=4,
             EMP=3,
         )
-        weapons = [very_heavy_pistol]
+        pistol = very_heavy_pistol()
+        pistol.name = 'Poor Quality VH Pistol'
+        pistol.modifier = -1
+        ripper = medium_melee_weapon()
+        ripper.name = 'Ripper'
+        weapons = [pistol, ripper]
         armor = {'head': 4, 'body': 4}
 
         skills = deepcopy(Skills())

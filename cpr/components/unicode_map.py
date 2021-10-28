@@ -19,5 +19,7 @@ cowboy = u'\U0001F920'
 up_triangle = u'\U000025B2'
 down_triangle = u'\U000025BC'
 right_arrow_with_tail = u'\U000021A3'
+double_lines_horizontal = u'\U00002550'
+double_lines_verticle = u'\U00002551'
 
 

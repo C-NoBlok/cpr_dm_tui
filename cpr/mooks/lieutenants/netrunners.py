@@ -3,7 +3,7 @@ from copy import deepcopy
 from cpr.mooks.mook import Mook
 from cpr.mooks.stats import Stats
 from cpr.mooks.skills import Skills, Skill
-from cpr.weapons import poor_quality_shotgun, very_heavy_pistol
+from cpr.weapons import very_heavy_pistol
 
 
 class Netrunner(Mook):
@@ -22,7 +22,7 @@ class Netrunner(Mook):
             BODY=3,
             EMP=4,
         )
-        weapons = [very_heavy_pistol]
+        weapons = [very_heavy_pistol()]
         armor = {'head': 11, 'body': 11}
 
         skills = deepcopy(Skills())

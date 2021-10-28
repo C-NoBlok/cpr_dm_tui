@@ -1,11 +1,7 @@
 import urwid
 
-from urwid import raw_display
-
 from cpr.components.mook_card.util import create_skill_buttons
 from cpr.components.buttons import SkillLabelButton
-
-screen = raw_display.Screen()
 
 cell_width = 24
 h_seperation = 1
@@ -13,7 +9,7 @@ v_seperation = 0
 align = 'left'
 
 
-class CombatZone(urwid.WidgetWrap, urwid.WidgetContainerMixin):
+class CombatZone(urwid.WidgetWrap):
 
     def __init__(self, mook, roll_function, event_log, debug=None):
         self.mook = mook
@@ -27,8 +23,7 @@ class CombatZone(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         return urwid.GridFlow([
             self.create_weapon_widget(),
             self.create_combat_widget()
-        ], 50, 1, 1, 'left'
-        )
+        ], 50, 1, 1, 'center')
 
     def create_weapon_widget(self):
         weapon_names = [weapon.name for weapon in self.mook.weapons]
@@ -41,18 +36,6 @@ class CombatZone(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             urwid.GridFlow(weapon_buttons, 60, 1, 0, 'left')
         ])
         return urwid.LineBox(_contents)
-
-    def create_armor_widget(self):
-        armor_elem = urwid.Columns([
-            (8, urwid.Text("Armor: ")),
-            (8, urwid.Pile(
-                [
-                    urwid.IntEdit('Head: ', self.mook.armor[-2]),
-                    urwid.IntEdit('Body: ', self.mook.armor[-1])
-                ]
-            ))
-        ])
-        return urwid.LineBox(armor_elem)
 
     def create_combat_widget(self):
         self.c_skills_visible = False
@@ -83,10 +66,10 @@ class CombatZone(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
     def toggle_combat_skills(self, obj):
         if self.c_skills_visible:
-            self.c_skill_placeholder.original_widget = self.skills_elem
+            self.c_skill_placeholder.original_widget = self.empty_grid
             self.c_skills_visible = False
         else:
-            self.c_skill_placeholder.original_widget = self.empty_grid
+            self.c_skill_placeholder.original_widget = self.skills_elem
             self.c_skills_visible = True
 
 

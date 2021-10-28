@@ -8,6 +8,8 @@ class Weapon:
     concealable: bool
     cost: int
     ROF: int
+    hands_required: int = 1
+    modifier: int = 0
 
     def hit(self):
         dmg = randint(self.damage, self.damage*6)
@@ -17,12 +19,13 @@ class Weapon:
 
 @dataclass
 class MeleeWeapon(Weapon):
-    melee_weapon_type: str
+    melee_weapon_type: str = 'heavy melee'
     skill = 'melee_weapon'
+
 
 @dataclass
 class RangedWeapon(Weapon):
-    skill: str
-    hands_required: int
+    skill: str = 'handgun'
+    clip_size: int = 8
 
 

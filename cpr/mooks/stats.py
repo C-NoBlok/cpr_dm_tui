@@ -15,12 +15,9 @@ class Stats:
     BODY: int
     EMP: int
 
-
     @property
     def max_hp(self):
-        return (10 + 5 * ceil(
-            (self.BODY + self.WILL) / 2
-        ))
+        return 5 * ceil((self.BODY + self.WILL) / 2) + 10
 
     def to_dict(self):
         return asdict(self)

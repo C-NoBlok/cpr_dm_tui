@@ -2,7 +2,7 @@ import urwid
 
 from cpr.components.mook_card.damage import TakeDamageDialog
 from cpr.components.buttons import TakeDamageButton
-from cpr.components.emoji_map import shield, mechanical_arm, explosion, cowboy
+from cpr.components.unicode_map import shield, mechanical_arm, explosion, cowboy
 
 
 class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
@@ -102,6 +102,16 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         ])
         return armor_elem
 
+    def enable_editing(self):
+        self.main_placeholder.original_widget = self.generate_editable_primary_stats_content()
+        self.editable = True
+
+    def disable_editing(self):
+        self.main_placeholder.original_widget = self.generate_primary_stats_content()
+        self.editable = False
+
+
+
     def toggle_editable(self):
         if self.editable:
             self.main_placeholder.original_widget = self.generate_primary_stats_content()
@@ -149,7 +159,7 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
         self.secondary_stats_component.original_widget = self.generate_secondary_stats_contents()
 
-        self.debug(self.mook.__dict__)
+        # self.debug(self.mook.__dict__)
 
     def take_damage_dialog(self, button):
         self.event_log.event('OUCH!!!')

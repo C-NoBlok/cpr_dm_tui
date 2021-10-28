@@ -2,7 +2,7 @@ from copy import deepcopy
 from cpr.mooks.mook import Mook
 from cpr.mooks.stats import Stats
 from cpr.mooks.skills import Skills
-from cpr.weapons import poor_quality_shotgun, very_heavy_pistol
+from cpr.weapons import grenade_launcher, heavy_smg, very_heavy_melee_weapon, heavy_melee_weapon
 
 class CyberPsycho(Mook):
 
@@ -21,7 +21,17 @@ class CyberPsycho(Mook):
             BODY=10,
             EMP=0
         )
-        weapons = [very_heavy_pistol]
+
+        pop_up_gl = grenade_launcher()
+        pop_up_gl.name = 'Popup Grenade Launcher'
+        pop_up_smg = heavy_smg()
+        pop_up_smg.name = 'Popup Heavy SMG'
+        cybersnake = very_heavy_melee_weapon()
+        cybersnake.name = 'Cybersnake'
+        wolvers = heavy_melee_weapon()
+        wolvers.name = 'Wolvers'
+
+        weapons = [pop_up_gl, pop_up_smg, cybersnake, wolvers]
         armor = {'head': 11, 'body': 11}
         skills = deepcopy(Skills())
         skills.from_rank_dict({
