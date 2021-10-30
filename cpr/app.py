@@ -33,7 +33,7 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             ))
         self.header = urwid.AttrMap(self.header, 'header')
 
-        self.event_log = EventLog(debug=lambda *args: None)
+        self.event_log = EventLog(debug=lambda *args: None, visible=False)
 
         self.body = urwid.Columns([
             (20, self.mook_list),

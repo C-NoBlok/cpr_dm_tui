@@ -46,13 +46,12 @@ class CombatZone(urwid.WidgetWrap):
             for btn_columns, swap_btn in zip(weapon_buttons, swap_btns):
                 btn_columns.contents[-1][0].original_widget = swap_btn
 
-            weapon_buttons.append(CardButton('Add', on_press=self.swap_add_weapon))
+            add_button = CardButton('Add', on_press=self.swap_add_weapon)
+            add_button = urwid.Padding(add_button, 'left', ('relative', 20), min_width=15)
+            weapon_buttons.append(add_button)
 
-        _contents = urwid.Columns([
-            (10, urwid.Text('Weapons: ')),
-            urwid.GridFlow(weapon_buttons, 60, 1, 0, 'left')
-        ])
-        return urwid.LineBox(_contents)
+        _contents = urwid.GridFlow(weapon_buttons, 50, 1, 0, 'center')
+        return urwid.LineBox(_contents, 'Weapons')
 
     def create_edit_weapons_buttons(self):
         # swap_buttons = [

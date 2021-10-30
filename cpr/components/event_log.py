@@ -5,7 +5,7 @@ import urwid
 
 class EventLog(urwid.WidgetWrap):
 
-    def __init__(self, max_lines=5, debug=None):
+    def __init__(self, max_lines=5, debug=None, visible=True):
 
         self.max_lines = max_lines
         self.debug = debug
@@ -14,7 +14,12 @@ class EventLog(urwid.WidgetWrap):
 
         self.msgs = ['>>>' for lines in range(self.max_lines)]
         self.event_log = urwid.Text('')
-        self.build_widget()
+        if visible:
+            self.build_widget()
+        else:
+            version = urwid.Text('v0.0.1', align='right')
+            version = urwid.AttrMap(version, 'footer')
+            super().__init__(version)
 
 
     def event(self, msg):
