@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from random import randint
+import uuid
 
 @dataclass
 class Weapon:
@@ -16,6 +17,13 @@ class Weapon:
         print(f'{self.name} hits for {dmg} damage.')
         return dmg
 
+    def make_poor_quality(self):
+        self.name = f'Poor Quality {self.name}'
+        self.modifier = -1
+
+    def make_excellent_quality(self):
+        self.name = f'Excellent Quality {self.name}'
+        self.modifier = 1
 
 @dataclass
 class MeleeWeapon(Weapon):
@@ -27,5 +35,7 @@ class MeleeWeapon(Weapon):
 class RangedWeapon(Weapon):
     skill: str = 'handgun'
     clip_size: int = 8
+    ammo_loaded: int = clip_size
+    total_ammo: int = 3*clip_size
 
 

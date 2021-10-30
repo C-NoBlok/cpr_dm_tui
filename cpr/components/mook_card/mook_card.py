@@ -19,6 +19,7 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.event_handler = event_handler
         self.debug = debug
         self.event_log = EventLog(debug=debug)
+        self.alt_style = alt_style
         # self.debug(urwid.signals.regiser)
 
         self.cell_width = 10
@@ -28,18 +29,33 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
         self.is_collapsed = False
 
+        # Define components
+        self.card_placeholder = urwid.WidgetPlaceholder(urwid.Text(''))
+        self.main_content = None
+        self.main_placeholder = None
+        self.pile = None
+        self.line_box = None
+
         self.delete_button = CardButton('X', on_press=self.close_card)
         self.min_max = CardButton('-', on_press=self.collapse)
         self.edit_save_button = CardButton('edit', on_press=self.toggle_editable)
 
         self.mook = mook_obj
         self.stats = Stats(self.mook, self.event_handler, self.event_log, self.debug)
-        self.combat_zone = CombatZone(self.mook, self.roll,self.event_log, debug=self.debug)
+
+        self.combat_zone = CombatZone(self,
+                                      self.mook, self.roll,
+                                      self.event_log, debug=self.debug)
+
         self.skills = SkillList(self.mook, self.roll)
 
         self.special_widget = \
             urwid.Edit('Special: ' + ', '.join(self.mook.special))
 
+        self.build_card()
+        super().__init__(self.card_placeholder)
+
+    def build_card(self):
         self.main_content = urwid.Pile([
             urwid.Divider(double_lines_horizontal),
             self.combat_zone,
@@ -49,7 +65,7 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             self.special_widget,
             urwid.Divider(double_lines_horizontal),
             self.event_log
-            ])
+        ])
 
         self.main_placeholder = urwid.WidgetPlaceholder(self.main_content)
 
@@ -57,21 +73,22 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             urwid.Columns([
                 self.stats,
                 (12, self.create_min_max_delete_buttons())
-                ]
+            ]
             ),
             self.main_placeholder
         ])
         self.line_box = urwid.LineBox(self.pile,
                                       title=self.mook.name,
                                       title_align='left')
-        if alt_style:
+        if self.alt_style:
             self.line_box = urwid.AttrMap(self.line_box, 'card_alt', 'card_focus')
         else:
             self.line_box = urwid.AttrMap(self.line_box, 'card', 'card_focus')
 
         self._selectable = True
 
-        super().__init__(self.line_box)
+        self.card_placeholder.original_widget = self.line_box
+
 
     def create_min_max_delete_buttons(self):
         return urwid.Pile(
@@ -119,7 +136,10 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             self.event_log.event(f'No Item Equiped in Slot {key}')
             return
 
-        return self.pile.keypress(size, key)
+        if self.card_placeholder.original_widget == self.line_box:
+            return self.pile.keypress(size, key)
+        else:
+            return self.card_placeholder.original_widget.keypress(size, key)
 
     def collapse(self, button):
         self.debug('colapsing card.')

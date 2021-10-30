@@ -19,6 +19,7 @@ class SkillList(urwid.WidgetWrap):
 
         self.widget = urwid.Columns([
             (14, self.skills_button),
+            (1, urwid.Text(' ')),
             self.placeholder
         ])
 

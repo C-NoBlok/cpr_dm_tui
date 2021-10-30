@@ -87,7 +87,7 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
                         self.wrap_int_edit(urwid.IntEdit('Death Save: ', self.mook.death_save))]),
             self.create_armor_widget()
         ]
-        grid = urwid.GridFlow(secondary_stat_contents, 23, 1, 0, 'left')
+        grid = urwid.GridFlow(secondary_stat_contents, 23, 3, 1, 'center')
         return grid
 
     def create_armor_widget(self):
@@ -109,8 +109,6 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
     def disable_editing(self):
         self.main_placeholder.original_widget = self.generate_primary_stats_content()
         self.editable = False
-
-
 
     def toggle_editable(self):
         if self.editable:

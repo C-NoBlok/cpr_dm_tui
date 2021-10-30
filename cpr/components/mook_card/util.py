@@ -2,7 +2,8 @@ import urwid
 from cpr.components.buttons import SkillButton
 
 
-def create_skill_buttons(mook, skills, col1_width=25, col2_width=6, on_press=None, is_weapon=False):
+def create_skill_buttons(mook, skills, col1_width=25, col2_width=6,
+                         on_press=None, is_weapon=False, include_place_holder=False, place_holder_width=5):
     contents = []
     for skill in skills:
 
@@ -14,10 +15,18 @@ def create_skill_buttons(mook, skills, col1_width=25, col2_width=6, on_press=Non
             skill_button = SkillButton(f'{skill}', on_press=on_press)
 
         skill_value = urwid.Text(button_side_text)
-        skill_cols = urwid.Columns([
-            (col1_width, skill_button),
-            (col2_width, skill_value)
-        ])
+        columns = [(col1_width, skill_button), (col2_width, skill_value)]
+
+        if include_place_holder:
+            columns.append(
+                (1, urwid.Text(''))
+            )
+            columns.append(
+                (place_holder_width, urwid.WidgetPlaceholder(urwid.Text('')))
+            )
+        skill_cols = urwid.Columns(
+            columns
+        )
         contents.append(skill_cols)
     return contents
 
