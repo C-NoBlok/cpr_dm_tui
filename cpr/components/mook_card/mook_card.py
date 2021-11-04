@@ -9,6 +9,7 @@ from cpr.components.mook_card.skills import SkillList
 from cpr.components.buttons import BoxButton, CardButton
 from cpr.components.unicode_map import pencil, floppy_disk, right_arrow_with_tail, double_lines_horizontal
 from cpr.components.event_log import EventLog
+from cpr.components.mook_card.change_skills import ChangeSkillsWidget
 
 
 class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
@@ -35,27 +36,31 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.main_placeholder = None
         self.pile = None
         self.line_box = None
+        self.widget_side_buttons = None
 
         self.delete_button = CardButton('X', on_press=self.close_card)
         self.min_max = CardButton('-', on_press=self.collapse)
         self.edit_save_button = CardButton('edit', on_press=self.toggle_editable)
 
+        self.stats = None
+        self.combat_zone = None
+        self.skills = None
+        self.special_widget = None
+
         self.mook = mook_obj
-        self.stats = Stats(self.mook, self.event_handler, self.event_log, self.debug)
-
-        self.combat_zone = CombatZone(self,
-                                      self.mook, self.roll,
-                                      self.event_log, debug=self.debug)
-
-        self.skills = SkillList(self.mook, self.roll)
-
-        self.special_widget = \
-            urwid.Edit('Special: ' + ', '.join(self.mook.special))
 
         self.build_card()
         super().__init__(self.card_placeholder)
 
     def build_card(self):
+        self.stats = Stats(self.mook, self.event_handler, self.event_log, self.debug)
+        self.combat_zone = CombatZone(self,
+                                      self.mook, self.roll,
+                                      self.event_log, debug=self.debug)
+        self.skills = SkillList(self, self.mook, self.roll)
+        self.special_widget = \
+            urwid.Edit('Special: ' + ', '.join(self.mook.special))
+
         self.main_content = urwid.Pile([
             urwid.Divider(double_lines_horizontal),
             self.combat_zone,
@@ -69,10 +74,11 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
         self.main_placeholder = urwid.WidgetPlaceholder(self.main_content)
 
+        self.widget_side_buttons = self.create_min_max_delete_buttons()
         self.pile = urwid.Pile([
             urwid.Columns([
                 self.stats,
-                (12, self.create_min_max_delete_buttons())
+                (12, self.widget_side_buttons)
             ]
             ),
             self.main_placeholder
@@ -89,6 +95,18 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
         self.card_placeholder.original_widget = self.line_box
 
+    def build_update_skills_widget(self, button):
+        self.debug(button)
+        change_skills_widget = ChangeSkillsWidget(self.mook, self.debug)
+        self.card_placeholder.original_widget = change_skills_widget
+        urwid.connect_signal(change_skills_widget, 'close', self.close_update_skill_widget)
+
+    def close_update_skill_widget(self, widget, data):
+        self.debug('Closing update skills widget')
+        self.debug(f'widget: {widget}')
+        self.debug(f'data: {data}')
+        self.debug(self.mook.skills)
+        self.build_card()
 
     def create_min_max_delete_buttons(self):
         return urwid.Pile(
@@ -96,7 +114,8 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
                 (5, self.min_max),
                 (5, self.delete_button)
             ]),
-                urwid.Padding(self.edit_save_button, align='center', width=('relative', 65))]
+                urwid.Columns([(10, self.edit_save_button)]),
+            ],
         )
 
     def toggle_editable(self, button):
@@ -104,6 +123,10 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         if not self.editable:
             self.stats.enable_editing()
             self.combat_zone.enable_editing()
+            edit_skills_button = urwid.Columns(
+                [(10, CardButton('Edit Skills', on_press=self.build_update_skills_widget))])
+            self.debug(self.widget_side_buttons.contents)
+            self.widget_side_buttons.contents.append((edit_skills_button, self.widget_side_buttons.options()))
             self.edit_save_button.button._label.set_text('Save')
             self.editable = True
         else:

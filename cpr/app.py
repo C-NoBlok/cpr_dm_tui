@@ -14,6 +14,8 @@ import urwid
 from urwid import raw_display
 screen = raw_display.Screen()
 
+DEBUG_MODE = True
+
 
 class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
@@ -33,7 +35,7 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             ))
         self.header = urwid.AttrMap(self.header, 'header')
 
-        self.event_log = EventLog(debug=lambda *args: None, visible=False)
+        self.event_log = EventLog(debug=lambda *args: None, visible=DEBUG_MODE)
 
         self.body = urwid.Columns([
             (20, self.mook_list),

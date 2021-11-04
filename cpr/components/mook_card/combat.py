@@ -50,14 +50,10 @@ class CombatZone(urwid.WidgetWrap):
             add_button = urwid.Padding(add_button, 'left', ('relative', 20), min_width=15)
             weapon_buttons.append(add_button)
 
-        _contents = urwid.GridFlow(weapon_buttons, 50, 1, 0, 'center')
+        _contents = urwid.GridFlow(weapon_buttons, 50, 1, 0, 'left')
         return urwid.LineBox(_contents, 'Weapons')
 
     def create_edit_weapons_buttons(self):
-        # swap_buttons = [
-        #     CardButton('Swap', on_press=lambda *args: self.swap_add_weapon(weapon))
-        #     for weapon in self.mook.weapons
-        # ]
         swap_buttons = []
         for weapon in self.mook.weapons:
             btn = CardButton('Swap')

@@ -6,7 +6,8 @@ from cpr.components.mook_card.util import create_skill_buttons
 
 class SkillList(urwid.WidgetWrap):
 
-    def __init__(self, mook, callback):
+    def __init__(self, card_widget, mook, callback):
+        self.card_widget = card_widget
         self.skills_visible = False
         skill_obj = list(mook.non_combat_skills.values())
         skills_button_list = create_skill_buttons(mook, skill_obj, on_press=callback, col1_width=20)
