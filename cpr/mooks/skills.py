@@ -101,6 +101,10 @@ class Skills:
             skill_names[info.name] = info
         return skill_names
 
+    @property
+    def total_ranks(self):
+        return sum([skill.rank for name, skill in self.__dict__.items()])
+
     def to_dict(self):
         return asdict(self)
 
