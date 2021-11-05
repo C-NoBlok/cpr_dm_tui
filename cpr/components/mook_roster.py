@@ -1,5 +1,6 @@
 import urwid
 from cpr.components.mook_card import MookCard
+from cpr.mooks.mook import Mook
 
 
 class MookRoster(urwid.WidgetWrap, urwid.WidgetContainerMixin):
@@ -22,8 +23,9 @@ class MookRoster(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             card = MookCard(mook_obj, self.event_handler, self.debug)
         return card
 
-    def add_mook(self, mook_cls):
-        mook = mook_cls()
+    def add_mook(self, mook):
+        if callable(mook):
+            mook = mook()
         self.debug(f'Adding {mook.name} to roster.')
         self.mook_roster.body.append(self.create_mook_card(mook))
 

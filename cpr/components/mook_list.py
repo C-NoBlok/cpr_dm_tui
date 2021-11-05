@@ -2,8 +2,13 @@ from cpr.components.mook_list_box import MookListBox
 from cpr.components.unicode_map import ogre, plus, floppy_disk
 from cpr.components.buttons import BoxButton
 from cpr.components.util import find_signal_object
+from cpr.mooks.mook import Mook
+from cpr.mooks.skills import Skills
+from cpr.mooks.stats import Stats
+from cpr.weapons import heavy_pistol
 
 import urwid
+
 
 class MookList(urwid.LineBox, urwid.WidgetContainerMixin):
 
@@ -15,7 +20,7 @@ class MookList(urwid.LineBox, urwid.WidgetContainerMixin):
         self.event_handler = event_handler
         frame = urwid.Frame(
             body=self.body(),
-            #header=self.header(),
+            # header=self.header(),
             footer=self.footer(),
             focus_part='body'
 
@@ -48,8 +53,11 @@ class MookList(urwid.LineBox, urwid.WidgetContainerMixin):
         return button_layout
 
     def new_mook(self, *args):
-        self.debug_handler('Editing Mook...')
-        self.debug_handler('', show_signals=True)
+        self.debug_handler('Creating New Mook...')
+        new_stats = Stats(6, 6, 6, 6, 6, 6, 6, 6, 6, 6)
+        new_mook = Mook('unnamed', 'custom', new_stats, [heavy_pistol()], {'head': 4, 'body': 4}, Skills(), [])
+        self.event_handler('add_mook_to_roster', new_mook)
+
 
 
     def save_mook(self, *args):

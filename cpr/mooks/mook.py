@@ -5,6 +5,7 @@ from typing import Dict
 
 from cpr.mooks.stats import Stats
 from cpr.mooks.skills import Skills
+from cpr.weapons import RangedWeapon, MeleeWeapon
 
 
 @dataclass
@@ -15,7 +16,7 @@ class Mook:
     weapons: list
     armor: dict
     skills: dict
-    special: dict
+    special: list
 
     # def __init__(self, name, mook_type, stats, weapons,
     #              armor, skills, special):
@@ -68,8 +69,16 @@ class Mook:
     def from_dict(mook_dict: Dict):
         stats = mook_dict.pop('stats')
         skills = mook_dict.pop('skills')
+        weapons = mook_dict.pop('weapons')
+        weapon_objs = []
+        for weapon in weapons:
+            if weapon['skill'] == 'melee_weapon':
+                weapon_objs.append(MeleeWeapon(**weapon))
+            else:
+                weapon_objs.append(RangedWeapon(**weapon))
+
         skills_obj = deepcopy(Skills())
-        mook = Mook(**mook_dict, stats=Stats(**stats), skills=skills_obj.from_dict(skills))
+        mook = Mook(**mook_dict, stats=Stats(**stats), skills=skills_obj.from_dict(skills), weapons=weapon_objs)
         return mook
 
 

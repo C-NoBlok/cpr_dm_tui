@@ -1,6 +1,8 @@
 import urwid
 from random import randint
 import uuid
+import json
+from pathlib import Path
 
 from cpr.components.mook_card.stats import Stats
 
@@ -93,6 +95,9 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
         self._selectable = True
 
+        if self.editable:
+            self.enable_editing()
+
         self.card_placeholder.original_widget = self.line_box
 
     def build_update_skills_widget(self, button):
@@ -118,22 +123,40 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             ],
         )
 
+    def enable_editing(self):
+        self.stats.enable_editing()
+        self.combat_zone.enable_editing()
+        save_as_button = urwid.Columns(
+            [(10, CardButton('Export', on_press=self.export_mook))])
+        edit_skills_button = urwid.Columns(
+            [(10, CardButton('Edit Skills', on_press=self.build_update_skills_widget))])
+        self.debug(self.widget_side_buttons.contents)
+        self.widget_side_buttons.contents.append((save_as_button, self.widget_side_buttons.options()))
+        self.widget_side_buttons.contents.append((edit_skills_button, self.widget_side_buttons.options()))
+        self.edit_save_button.button._label.set_text('Save')
+        self.editable = True
+
+    def disable_editing(self):
+        self.stats.disable_editing()
+        self.combat_zone.disable_editing()
+        self.widget_side_buttons.contents = self.widget_side_buttons.contents[:2]
+        self.edit_save_button.button._label.set_text('Edit')
+        self.editable = False
+
     def toggle_editable(self, button):
         self.debug('making_editable')
         if not self.editable:
-            self.stats.enable_editing()
-            self.combat_zone.enable_editing()
-            edit_skills_button = urwid.Columns(
-                [(10, CardButton('Edit Skills', on_press=self.build_update_skills_widget))])
-            self.debug(self.widget_side_buttons.contents)
-            self.widget_side_buttons.contents.append((edit_skills_button, self.widget_side_buttons.options()))
-            self.edit_save_button.button._label.set_text('Save')
-            self.editable = True
+            self.enable_editing()
         else:
-            self.stats.disable_editing()
-            self.combat_zone.disable_editing()
-            self.edit_save_button.button._label.set_text('Edit')
-            self.editable = False
+            self.disable_editing()
+
+    def export_mook(self, button):
+        self.debug('Exporting Mooks')
+        user_folder = Path().home() / '.cpr'
+        file_path = user_folder / f'{self.mook.name}.mook'
+
+        with open(file_path, 'w') as f:
+            json.dump(self.mook.to_dict(), f)
 
     def keypress(self, size, key):
         self.debug(f'card key: {key}')
