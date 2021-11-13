@@ -12,6 +12,7 @@ from cpr.components.buttons import BoxButton, CardButton
 from cpr.components.unicode_map import pencil, floppy_disk, right_arrow_with_tail, double_lines_horizontal
 from cpr.components.event_log import EventLog
 from cpr.components.mook_card.change_skills import ChangeSkillsWidget
+from cpr.components.mook_card.change_name import ChangeName
 
 
 class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
@@ -127,13 +128,13 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.stats.enable_editing()
         self.combat_zone.enable_editing()
         save_as_button = urwid.Columns(
-            [(10, CardButton('Export', on_press=self.export_mook))])
+            [(10, CardButton('Save As', on_press=self.save_mook))])
         edit_skills_button = urwid.Columns(
             [(10, CardButton('Edit Skills', on_press=self.build_update_skills_widget))])
         self.debug(self.widget_side_buttons.contents)
         self.widget_side_buttons.contents.append((save_as_button, self.widget_side_buttons.options()))
         self.widget_side_buttons.contents.append((edit_skills_button, self.widget_side_buttons.options()))
-        self.edit_save_button.button._label.set_text('Save')
+        self.edit_save_button.button._label.set_text('Stop Edit')
         self.editable = True
 
     def disable_editing(self):
@@ -150,16 +151,28 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         else:
             self.disable_editing()
 
-    def export_mook(self, button):
+    def save_mook(self, button):
         self.debug('Exporting Mooks')
+        change_name_widget = ChangeName(self.mook, self.debug)
+        urwid.connect_signal(change_name_widget, 'close', self.close_name_change_widget)
+        self.card_placeholder.original_widget = change_name_widget
+
+    def close_name_change_widget(self, widget, data):
         user_folder = Path().home() / '.cpr'
         file_path = user_folder / f'{self.mook.name}.mook'
 
         with open(file_path, 'w') as f:
             json.dump(self.mook.to_dict(), f)
 
+        self.event_handler('refresh_mook_list', None)
+        self.build_card()
+
     def keypress(self, size, key):
         self.debug(f'card key: {key}')
+
+        if isinstance(self.card_placeholder.original_widget, ChangeName):
+            return self.card_placeholder.original_widget.keypress(size, key)
+
         card_key_funcs = {
             'e': lambda: self.roll('Evasion'),
             'p': lambda: self.roll('Perception'),

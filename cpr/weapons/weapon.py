@@ -28,7 +28,7 @@ class Weapon:
 @dataclass
 class MeleeWeapon(Weapon):
     melee_weapon_type: str = 'heavy melee'
-    skill = 'melee_weapon'
+    skill: str = 'melee_weapon'
 
 
 @dataclass

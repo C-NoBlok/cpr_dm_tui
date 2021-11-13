@@ -17,6 +17,7 @@ class Mook:
     armor: dict
     skills: dict
     special: list
+    custom: bool = False
 
     # def __init__(self, name, mook_type, stats, weapons,
     #              armor, skills, special):

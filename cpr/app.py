@@ -21,9 +21,10 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
     def __init__(self):
 
+        self.event_log = EventLog(debug=lambda *args: None, visible=DEBUG_MODE)
         self.roster = MookRoster(self.handle_event, self.debug)
-        self.mook_list = MookList(self.handle_event, self.debug)
-        self.mook_list = urwid.AttrMap(self.mook_list, 'mook_list')
+        self.mook_list_widget = MookList(self.handle_event, self.debug)
+        self.mook_list = urwid.AttrMap(self.mook_list_widget, 'mook_list')
 
         self.header = urwid.LineBox(
             urwid.Pile([
@@ -34,8 +35,6 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             ]
             ))
         self.header = urwid.AttrMap(self.header, 'header')
-
-        self.event_log = EventLog(debug=lambda *args: None, visible=DEBUG_MODE)
 
         self.body = urwid.Columns([
             (20, self.mook_list),
@@ -74,6 +73,10 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
         if action == 'remove card':
             self.roster.remove_mook_card(data)
+
+        if action == 'refresh_mook_list':
+            self.debug('Refreshing mook list...')
+            self.mook_list_widget.build_widget()
 
     def debug(self, msg, show_signals=False):
         def get_signals():

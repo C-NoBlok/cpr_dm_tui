@@ -10,30 +10,37 @@ from cpr.weapons import heavy_pistol
 import urwid
 
 
-class MookList(urwid.LineBox, urwid.WidgetContainerMixin):
+class MookList(urwid.WidgetWrap):
 
     signals = ['clicked']
 
     def __init__(self, event_handler, debug):
 
-        self.debug_handler = debug
+        self.debug = debug
         self.event_handler = event_handler
-        frame = urwid.Frame(
+        self.frame = None
+        self.title = ogre + ' Mook List ' + ogre
+        self.main_placeholder = urwid.WidgetPlaceholder(urwid.Text(''))
+        self.build_widget()
+        super().__init__(self.main_placeholder)
+
+    def build_widget(self):
+        self.frame = urwid.Frame(
             body=self.body(),
             # header=self.header(),
             footer=self.footer(),
             focus_part='body'
 
         )
+        linebox = urwid.LineBox(self.frame,
+                                title=self.title,
+                                title_align='left')
 
-        title = ogre + ' Mook List ' + ogre
-        title_align = 'left'
-        super().__init__(frame,
-                         title=title,
-                         title_align=title_align)
+        self.main_placeholder.original_widget = linebox
+        self.debug('Updated Mook List.')
 
     def body(self):
-        list_box = MookListBox(self.event_handler, self.debug_handler)
+        list_box = MookListBox(self.event_handler, self.debug)
         return list_box
 
     def header(self):
@@ -53,7 +60,7 @@ class MookList(urwid.LineBox, urwid.WidgetContainerMixin):
         return button_layout
 
     def new_mook(self, *args):
-        self.debug_handler('Creating New Mook...')
+        self.debug('Creating New Mook...')
         new_stats = Stats(6, 6, 6, 6, 6, 6, 6, 6, 6, 6)
         new_mook = Mook('unnamed', 'custom', new_stats, [heavy_pistol()], {'head': 4, 'body': 4}, Skills(), [])
         self.event_handler('add_mook_to_roster', new_mook)
@@ -61,7 +68,7 @@ class MookList(urwid.LineBox, urwid.WidgetContainerMixin):
 
 
     def save_mook(self, *args):
-        self.debug_handler('Saving Mook... (Not Implemented. What am I saving?)')
+        self.debug('Saving Mook... (Not Implemented. What am I saving?)')
 
     def list_walker(self):
         contents = [
