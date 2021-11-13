@@ -155,6 +155,14 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             else:
                 self.mook.hp = int(num)
 
+        if 'Head' in object.caption:
+            self.mook.armor['head'] = num
+            return
+
+        if 'Body' in object.caption:
+            self.mook.armor['body'] = num
+            return
+
         self.secondary_stats_component.original_widget = self.generate_secondary_stats_contents()
 
         # self.debug(self.mook.__dict__)
