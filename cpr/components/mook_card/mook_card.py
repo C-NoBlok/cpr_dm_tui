@@ -3,6 +3,7 @@ from random import randint
 import uuid
 import json
 from pathlib import Path
+import os
 
 from cpr.components.mook_card.stats import Stats
 
@@ -134,6 +135,13 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.debug(self.widget_side_buttons.contents)
         self.widget_side_buttons.contents.append((save_as_button, self.widget_side_buttons.options()))
         self.widget_side_buttons.contents.append((edit_skills_button, self.widget_side_buttons.options()))
+
+        if self.mook.custom:
+            delete_mook = urwid.Columns(
+                [(10, CardButton('Delete', on_press=self.delete_mook))])
+            self.widget_side_buttons.contents.append((delete_mook,
+                                                      self.widget_side_buttons.options()))
+
         self.edit_save_button.button._label.set_text('Stop Edit')
         self.editable = True
 
@@ -157,9 +165,22 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         urwid.connect_signal(change_name_widget, 'close', self.close_name_change_widget)
         self.card_placeholder.original_widget = change_name_widget
 
-    def close_name_change_widget(self, widget, data):
+    def delete_mook(self, button):
+        self.debug('Deleting Mook...')
         user_folder = Path().home() / '.cpr'
         file_path = user_folder / f'{self.mook.name}.mook'
+        if file_path.exists():
+            os.remove(file_path)
+        self.event_handler('refresh_mook_list', None)
+
+    def close_name_change_widget(self, widget, accept_changes):
+        if not accept_changes:
+            self.build_card()
+            return
+
+        user_folder = Path().home() / '.cpr'
+        file_path = user_folder / f'{self.mook.name}.mook'
+        self.mook.custom = True
 
         with open(file_path, 'w') as f:
             json.dump(self.mook.to_dict(), f)
