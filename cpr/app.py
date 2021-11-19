@@ -5,10 +5,11 @@ from logging import DEBUG
 logger = logging.Logger('cpr')
 logger.setLevel(DEBUG)
 
-from cpr.components.mook_list import MookList
+from cpr.components.mook_list.mook_list import MookList
 from cpr.components.mook_roster import MookRoster
 from cpr.components.widget_pallete import pallete_256
 from cpr.components.event_log import EventLog
+from cpr.components.mook_tree.mook_tree_top import MookTreeTop
 
 import urwid
 from urwid import raw_display
@@ -25,6 +26,8 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.roster = MookRoster(self.handle_event, self.debug)
         self.mook_list_widget = MookList(self.handle_event, self.debug)
         self.mook_list = urwid.AttrMap(self.mook_list_widget, 'mook_list')
+        self.mook_tree = MookTreeTop(self.handle_event, self.debug)
+        self.mook_tree = urwid.AttrMap(self.mook_tree, 'mook_list')
 
         self.header = urwid.LineBox(
             urwid.Pile([
@@ -37,7 +40,8 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.header = urwid.AttrMap(self.header, 'header')
 
         self.body = urwid.Columns([
-            (20, self.mook_list),
+            # (20, self.mook_list),
+            (30, self.mook_tree),
             self.roster
         ])
         self.body = urwid.AttrMap(self.body, 'body')

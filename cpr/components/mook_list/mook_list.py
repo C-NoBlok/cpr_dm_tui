@@ -1,7 +1,6 @@
-from cpr.components.mook_list_box import MookListBox
-from cpr.components.unicode_map import ogre, plus, floppy_disk
+from cpr.components.mook_list.mook_list_box import MookListBox
+from cpr.components.unicode_map import ogre
 from cpr.components.buttons import BoxButton
-from cpr.components.util import find_signal_object
 from cpr.mooks.mook import Mook
 from cpr.mooks.skills import Skills
 from cpr.mooks.stats import Stats
@@ -59,16 +58,14 @@ class MookList(urwid.WidgetWrap):
         button_layout = urwid.Pile([add_button, save_mook])
         return button_layout
 
+    def save_mook(self):
+        pass
+
     def new_mook(self, *args):
         self.debug('Creating New Mook...')
         new_stats = Stats(6, 6, 6, 6, 6, 6, 6, 6, 6, 6)
         new_mook = Mook('unnamed', 'custom', new_stats, [heavy_pistol()], {'head': 4, 'body': 4}, Skills(), [])
         self.event_handler('add_mook_to_roster', new_mook)
-
-
-
-    def save_mook(self, *args):
-        self.debug('Saving Mook... (Not Implemented. What am I saving?)')
 
     def list_walker(self):
         contents = [

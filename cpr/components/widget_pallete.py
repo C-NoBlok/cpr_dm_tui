@@ -3,6 +3,7 @@
 pallete_256 = [
     ('header', '', '', '', 'h196', 'g15'),
     ('footer', '', '', '', 'h196', 'g15'),
+    ('focus', '', '', 'bold', 'g100', 'g35'),
     ('body', 'dark red', 'light gray',),
     ('title', 'dark red', 'light gray'),
     ('mook_list', '', '', '', 'h196', 'g15'),

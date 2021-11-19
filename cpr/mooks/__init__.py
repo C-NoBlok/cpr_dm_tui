@@ -14,3 +14,21 @@ mooks = {
     'Pyro': Pyro,
     'CyberPsycho': CyberPsycho,
 }
+
+grunts = {
+    'Body Guard': Bodyguard,
+    'Booster Ganger': BoosterGanger,
+    'Security Operative': SecurityOperative,
+}
+
+lieutenants = {
+    'Netrunner': Netrunner,
+}
+
+mini_bosses = {
+    'Pyro': Pyro,
+}
+
+bosses = {
+    'CyberPsycho': CyberPsycho,
+}
