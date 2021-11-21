@@ -171,7 +171,7 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         file_path = user_folder / f'{self.mook.name}.mook'
         if file_path.exists():
             os.remove(file_path)
-        self.event_handler('refresh_mook_list', None)
+        self.event_handler('refresh_mook_tree', None)
 
     def close_name_change_widget(self, widget, accept_changes):
         if not accept_changes:
@@ -185,7 +185,7 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         with open(file_path, 'w') as f:
             json.dump(self.mook.to_dict(), f)
 
-        self.event_handler('refresh_mook_list', None)
+        self.event_handler('refresh_mook_tree', None)
         self.build_card()
 
     def keypress(self, size, key):

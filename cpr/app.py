@@ -9,7 +9,7 @@ from cpr.components.mook_list.mook_list import MookList
 from cpr.components.mook_roster import MookRoster
 from cpr.components.widget_pallete import pallete_256
 from cpr.components.event_log import EventLog
-from cpr.components.mook_tree.mook_tree_top import MookTreeTop
+from cpr.components.mook_tree.mook_tree_main_widget import MookTreeMainWidget
 
 import urwid
 from urwid import raw_display
@@ -26,8 +26,7 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.roster = MookRoster(self.handle_event, self.debug)
         self.mook_list_widget = MookList(self.handle_event, self.debug)
         self.mook_list = urwid.AttrMap(self.mook_list_widget, 'mook_list')
-        self.mook_tree = MookTreeTop(self.handle_event, self.debug)
-        self.mook_tree = urwid.AttrMap(self.mook_tree, 'mook_list')
+        self.mook_tree = MookTreeMainWidget(self.handle_event, self.debug)
 
         self.header = urwid.LineBox(
             urwid.Pile([
@@ -41,7 +40,7 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
 
         self.body = urwid.Columns([
             # (20, self.mook_list),
-            (30, self.mook_tree),
+            (30, urwid.AttrMap(self.mook_tree, 'mook_list')),
             self.roster
         ])
         self.body = urwid.AttrMap(self.body, 'body')
@@ -78,9 +77,9 @@ class MainWidget(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         if action == 'remove card':
             self.roster.remove_mook_card(data)
 
-        if action == 'refresh_mook_list':
-            self.debug('Refreshing mook list...')
-            self.mook_list_widget.build_widget()
+        if action == 'refresh_mook_tree':
+            self.debug('Refreshing mook tree...')
+            self.mook_tree.build_widget()
 
     def debug(self, msg, show_signals=False):
         def get_signals():

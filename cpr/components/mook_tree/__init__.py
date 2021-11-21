@@ -17,5 +17,3 @@ def load_custom_mooks():
         custom_mooks.append(Mook.from_dict(custom_mook))
     return custom_mooks
 
-
-custom_mooks = load_custom_mooks()

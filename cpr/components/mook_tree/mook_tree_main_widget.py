@@ -2,7 +2,7 @@ import urwid
 
 from cpr.components.mook_tree.core_mook_tree import CoreMookTypeNode
 from cpr.components.mook_tree.custom_mook_tree import CustomMookTypeNode
-from cpr.components.mook_tree import custom_mooks
+from cpr.components.mook_tree import load_custom_mooks
 from cpr.components.mook_tree.mook_tree_widgets import MookTreeWidget
 from cpr.mooks import grunts as core_grunts
 from cpr.mooks import lieutenants as core_lieutenants
@@ -15,20 +15,35 @@ from cpr.mooks.grunts.security_operative import SecurityOperative
 core_grunt_list = [Bodyguard, BoosterGanger, SecurityOperative]
 
 
-class MookTreeTop(urwid.WidgetWrap):
+class MookTreeMainWidget(urwid.WidgetWrap):
 
     def __init__(self, event_handler, debug):
         self.event_handler = event_handler
         self.debug = debug
+        self.custom_mook_list = None
+        self.tree = None
+        self.tree_walker = None
+        self.top_node = None
+        self.main_placeholder = None
+        self.build_widget()
 
+        super().__init__(self.main_placeholder)
+
+    def build_widget(self):
+        self.debug('Building Mook Tree...')
+        self.custom_mook_list = load_custom_mooks()
+        self.top_node = TopNode(self.custom_mook_list)
         self.tree_walker = urwid.TreeWalker(
-            TopNode()
+            self.top_node
         )
         self.tree = urwid.TreeListBox(
             self.tree_walker
         )
-
-        super().__init__(self.tree)
+        if self.main_placeholder is None:
+            self.main_placeholder = urwid.WidgetPlaceholder(self.tree)
+        else:
+            self.debug('Replacing')
+            self.main_placeholder.original_widget = self.tree
 
     def keypress(self, size, key):
         if key in ['enter', 'mouse_press']:
@@ -63,20 +78,21 @@ class MookTreeTop(urwid.WidgetWrap):
             elif node_parent.get_parent().get_key() == 'Custom':
                 self.debug('Adding Custom Mook')
                 mook_name = focus_node.get_key()
-                mook = list(filter(lambda x: x.name == mook_name, custom_mooks))[0]
+                mook = list(filter(lambda x: x.name == mook_name, self.custom_mook_list))[0]
                 self.event_handler('add_mook_to_roster', mook)
 
 
 class TopNode(urwid.ParentNode):
-    def __init__(self):
+    def __init__(self, custom_mook_list=[]):
         super().__init__('', parent=None, key='Mooks')
         self._child_keys = ['Core', 'Custom']
+        self.custom_mook_list = custom_mook_list
 
     def load_child_node(self, key):
         if key == 'Core':
             return CoreMookTypeNode('', parent=self, key=key)
         elif key == 'Custom':
-            return CustomMookTypeNode('', parent=self, key=key)
+            return CustomMookTypeNode('', parent=self, key=key, custom_mooks=self.custom_mook_list)
 
     def load_widget(self):
         return MookTreeWidget(self)
