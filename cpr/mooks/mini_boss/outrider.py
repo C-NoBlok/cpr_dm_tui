@@ -36,7 +36,7 @@ class Outrider(Mook):
         skills.drive_land_vehicle.rank = 14 - stats.__getattribute__(skills.drive_land_vehicle.base_stat)
         skills.education.rank = 8 - stats.__getattribute__(skills.education.base_stat)
         skills.endurance.rank = 10 - stats.__getattribute__(skills.endurance.base_stat)
-        skills.evasion.rank = 14- stats.__getattribute__(skills.evasion.base_stat)
+        skills.evasion.rank = 14 - stats.__getattribute__(skills.evasion.base_stat)
         skills.first_aid.rank = 5 - stats.__getattribute__(skills.first_aid.base_stat)
         skills.handgun.rank = 14 - stats.__getattribute__(skills.handgun.base_stat)
         skills.human_perception.rank = 8 - stats.__getattribute__(skills.human_perception.base_stat)

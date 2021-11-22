@@ -14,6 +14,7 @@ from cpr.components.unicode_map import pencil, floppy_disk, right_arrow_with_tai
 from cpr.components.event_log import EventLog
 from cpr.components.mook_card.change_skills import ChangeSkillsWidget
 from cpr.components.mook_card.change_name import ChangeName
+from cpr.components.mook_card.change_weapon import ChangeWeapon
 
 
 class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
@@ -192,6 +193,9 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.debug(f'card key: {key}')
 
         if isinstance(self.card_placeholder.original_widget, ChangeName):
+            return self.card_placeholder.original_widget.keypress(size, key)
+
+        if isinstance(self.card_placeholder.original_widget, ChangeWeapon):
             return self.card_placeholder.original_widget.keypress(size, key)
 
         card_key_funcs = {

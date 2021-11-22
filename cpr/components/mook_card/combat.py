@@ -68,6 +68,7 @@ class CombatZone(urwid.WidgetWrap):
 
     def close_change_weapon_widget(self, change_weapon_widget, new_weapon):
         self.debug(new_weapon)
+
         if new_weapon is None:
             self.card_widget.build_card()
             return
@@ -80,7 +81,8 @@ class CombatZone(urwid.WidgetWrap):
                 if mook_weapon is change_weapon_widget.original_weapon:
                     self.debug(f'Changing weapon {i} ...')
                     self.mook.weapons.remove(change_weapon_widget.original_weapon)
-                    self.mook.weapons.insert(i, new_weapon)
+                    if not new_weapon == 'empty':
+                        self.mook.weapons.insert(i, new_weapon)
 
         self.weapon_widget_placeholder.original_widget = self.create_weapon_widget(editable=True)
         self.card_widget.build_card()
