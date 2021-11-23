@@ -50,7 +50,7 @@ class CombatZone(urwid.WidgetWrap):
             add_button = urwid.Padding(add_button, 'left', ('relative', 20), min_width=15)
             weapon_buttons.append(add_button)
 
-        _contents = urwid.GridFlow(weapon_buttons, 50, 1, 0, 'left')
+        _contents = urwid.GridFlow(weapon_buttons, 40, 1, 0, 'center')
         return urwid.LineBox(_contents, 'Weapons')
 
     def create_edit_weapons_buttons(self):
