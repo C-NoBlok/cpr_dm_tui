@@ -91,7 +91,9 @@ class ChangeWeapon(urwid.WidgetWrap):
         self.change_weapon(selected_weapon)
 
     def set_weapon_properties(self, weapon):
-        weapon.name = self.name_edit.get_edit_text()
+        custom_name = self.name_edit.get_edit_text()
+        if custom_name != '':
+            weapon.name = custom_name
 
     def change_weapon(self, weapon_name: str):
         if weapon_name == 'empty':

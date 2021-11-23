@@ -15,6 +15,7 @@ from cpr.components.event_log import EventLog
 from cpr.components.mook_card.change_skills import ChangeSkillsWidget
 from cpr.components.mook_card.change_name import ChangeName
 from cpr.components.mook_card.change_weapon import ChangeWeapon
+from cpr.components.mook_card.special import SpecialWidget
 
 
 class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
@@ -63,8 +64,7 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
                                       self.mook, self.roll,
                                       self.event_log, debug=self.debug)
         self.skills = SkillList(self, self.mook, self.roll)
-        self.special_widget = \
-            urwid.Edit('Special: ' + ', '.join(self.mook.special))
+        self.special_widget = SpecialWidget(self.event_handler, self.debug, self.mook)
 
         self.main_content = urwid.Pile([
             urwid.Divider(double_lines_horizontal),
