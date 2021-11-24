@@ -9,6 +9,8 @@ class SpecialWidget(urwid.WidgetWrap):
         self.event_hanlder = event_handler
         self.debug = debug
         self.mook = mook
+        self.edits = None
+        self.grid = None
 
         self.main_placeholder = None
         self.build_widget()
@@ -26,15 +28,15 @@ class SpecialWidget(urwid.WidgetWrap):
             weapon_edit = urwid.AttrMap(weapon_edit, '', 'edit_focus')
             ammo_edit_widgets.append(weapon_edit)
 
-        ammo_widget = urwid.Columns(
-            [
-                (8, urwid.Text('Ammo: ')),
-                urwid.GridFlow(ammo_edit_widgets, 25, 1, 1, 'left')
-            ]
-        )
-        # gear_cyberware =
+        ammo_widget = urwid.GridFlow(ammo_edit_widgets, 25, 1, 1, 'left')
+        ammo_widget = urwid.LineBox(ammo_widget, title='Ammo')
 
-        gear = urwid.LineBox(ammo_widget)
+        equipment = urwid.LineBox(self.generate_editable_equipment(),
+                                  title='Gear')
+        gear = urwid.Pile([
+            ammo_widget,
+            equipment
+        ])
 
         if self.main_placeholder is None:
             self.main_placeholder = urwid.WidgetPlaceholder(gear)
@@ -49,4 +51,25 @@ class SpecialWidget(urwid.WidgetWrap):
                 self.debug(f'updated {widget.caption} ammo to {data}')
                 weapon.total_ammo = data
 
+    def generate_editable_equipment(self):
+        self.edits = [urwid.Edit('', item) for item in self.mook.special]
+        self.edits.append(urwid.Edit('', ''))
+        wrapped_edits = [self.wrap_edit(edit) for edit in self.edits]
+        self.grid = urwid.GridFlow(wrapped_edits, 25, 1, 1, 'left')
+        return self.grid
+
+    def wrap_edit(self, edit):
+        urwid.connect_signal(edit, 'change', self.update_special)
+        edit._selectable = True
+        return urwid.AttrMap(edit, '', 'edit_focus')
+
+    def update_special(self, widget, data):
+        widget_index = self.edits.index(widget)
+        if widget_index == len(self.edits) - 1:
+            self.mook.special.append(data)
+            edit = urwid.Edit('', '')
+            self.edits.append(edit)
+            self.grid.contents.append((self.wrap_edit(edit), self.grid.options()))
+        self.mook.special.pop(widget_index)
+        self.mook.special.insert(widget_index, data)
 

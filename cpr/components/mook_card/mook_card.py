@@ -198,6 +198,10 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         if isinstance(self.card_placeholder.original_widget, ChangeWeapon):
             return self.card_placeholder.original_widget.keypress(size, key)
 
+        self.debug(self.main_content.get_focus())
+        if isinstance(self.main_content.get_focus(), SpecialWidget):
+            return self.special_widget.keypress(size, key)
+
         card_key_funcs = {
             'e': lambda: self.roll('Evasion'),
             'p': lambda: self.roll('Perception'),
