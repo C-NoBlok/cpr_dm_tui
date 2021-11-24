@@ -16,6 +16,7 @@ from cpr.components.mook_card.change_skills import ChangeSkillsWidget
 from cpr.components.mook_card.change_name import ChangeName
 from cpr.components.mook_card.change_weapon import ChangeWeapon
 from cpr.components.mook_card.special import SpecialWidget
+from cpr.util.mook_json_encoder import MookJsonEncoder
 
 
 class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
@@ -56,6 +57,7 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.mook = mook_obj
 
         self.build_card()
+        self.debug(self.mook.weapons[0].__dict__)
         super().__init__(self.card_placeholder)
 
     def build_card(self):
@@ -71,9 +73,7 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             self.combat_zone,
             urwid.Divider(double_lines_horizontal),
             self.skills,
-            urwid.Divider(double_lines_horizontal),
             self.special_widget,
-            urwid.Divider(double_lines_horizontal),
             self.event_log
         ])
 
@@ -184,7 +184,7 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
         self.mook.custom = True
 
         with open(file_path, 'w') as f:
-            json.dump(self.mook.to_dict(), f)
+            json.dump(self.mook.to_dict(), f, cls=MookJsonEncoder)
 
         self.event_handler('refresh_mook_tree', None)
         self.build_card()
@@ -253,6 +253,9 @@ class MookCard(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             roll += randint(1, 10)
         if roll == 1:
             roll -= randint(1, 10)
+        if self.mook.is_seriously_wounded:
+            self.event_log.event('Seriously Wounded! -2 to roll.')
+            roll -= 2
 
         if isinstance(button, urwid.Widget):
             skill_label = button.label

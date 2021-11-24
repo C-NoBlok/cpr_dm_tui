@@ -42,5 +42,11 @@ class SpecialWidget(urwid.WidgetWrap):
             self.main_placeholder.original_widget = gear
 
     def update_ammo(self, widget, data):
-        self.debug(widget)
+        self.debug(widget.caption)
         self.debug(data)
+        for name, weapon in self.mook.weapons_by_name.items():
+            if name in widget.caption:
+                self.debug(f'updated {widget.caption} ammo to {data}')
+                weapon.total_ammo = data
+
+

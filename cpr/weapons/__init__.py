@@ -1,8 +1,8 @@
-from .weapon import RangedWeapon, MeleeWeapon
+from .weapon import Weapon
 
 
 def light_melee_weapon():
-    return MeleeWeapon(
+    return Weapon(
         name='Light Melee Weapon',
         melee_weapon_type='light',
         damage=1,
@@ -13,7 +13,7 @@ def light_melee_weapon():
 
 
 def medium_melee_weapon():
-    return MeleeWeapon(
+    return Weapon(
         name='Medium Melee Weapon',
         melee_weapon_type='medium',
         damage=2,
@@ -24,7 +24,7 @@ def medium_melee_weapon():
 
 
 def heavy_melee_weapon():
-    return MeleeWeapon(
+    return Weapon(
         name='Heavy Melee Weapon',
         melee_weapon_type='very heavy',
         damage=3,
@@ -35,7 +35,7 @@ def heavy_melee_weapon():
 
 
 def very_heavy_melee_weapon():
-    return MeleeWeapon(
+    return Weapon(
         name='Very Heavy Melee Weapon',
         melee_weapon_type='very heavy',
         damage=4,
@@ -46,7 +46,7 @@ def very_heavy_melee_weapon():
 
 
 def medium_pistol():
-    return RangedWeapon(
+    return Weapon(
         name='Medium Pistol',
         damage=2,
         concealable=True,
@@ -59,7 +59,7 @@ def medium_pistol():
 
 
 def heavy_pistol():
-    return RangedWeapon(
+    return Weapon(
         name='Heavy Pistol',
         damage=3,
         concealable=True,
@@ -72,7 +72,7 @@ def heavy_pistol():
 
 
 def very_heavy_pistol():
-    return RangedWeapon(
+    return Weapon(
         name='Very Heavy Pistol',
         damage=4,
         concealable=False,
@@ -85,7 +85,7 @@ def very_heavy_pistol():
 
 
 def smg():
-    return RangedWeapon(
+    return Weapon(
         name='SMG',
         damage=2,
         concealable=True,
@@ -98,7 +98,7 @@ def smg():
 
 
 def heavy_smg():
-    return RangedWeapon(
+    return Weapon(
         name='Heavy SMG',
         damage=3,
         concealable=False,
@@ -111,7 +111,7 @@ def heavy_smg():
 
 
 def shotgun():
-    return RangedWeapon(
+    return Weapon(
         name='Shotgun',
         damage=5,
         concealable=False,
@@ -124,7 +124,7 @@ def shotgun():
 
 
 def assault_rifle():
-    return RangedWeapon(
+    return Weapon(
         name='Assult Rifle',
         damage=5,
         concealable=False,
@@ -137,7 +137,7 @@ def assault_rifle():
 
 
 def sniper_rifle():
-    return RangedWeapon(
+    return Weapon(
         name='Sniper Rifle',
         damage=5,
         concealable=False,
@@ -150,7 +150,7 @@ def sniper_rifle():
 
 
 def bows_and_crossbows():
-    return RangedWeapon(
+    return Weapon(
         name='Bows & Crossbows',
         damage=4,
         concealable=False,
@@ -163,7 +163,7 @@ def bows_and_crossbows():
 
 
 def grenade_launcher():
-    return RangedWeapon(
+    return Weapon(
         name='Grenade Launcher',
         damage=6,
         concealable=False,
@@ -176,7 +176,7 @@ def grenade_launcher():
 
 
 def rocket_launcher():
-    return RangedWeapon(
+    return Weapon(
         name='Rocket Launcher',
         damage=8,
         concealable=False,
@@ -189,7 +189,7 @@ def rocket_launcher():
 
 
 def flame_thrower():
-    return RangedWeapon(
+    return Weapon(
         name='Flame Thrower',
         damage=5,
         concealable=False,

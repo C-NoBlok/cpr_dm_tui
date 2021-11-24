@@ -5,7 +5,7 @@ from typing import Dict
 
 from cpr.mooks.stats import Stats
 from cpr.mooks.skills import Skills
-from cpr.weapons import RangedWeapon, MeleeWeapon
+from cpr.weapons import Weapon
 
 
 @dataclass
@@ -15,19 +15,9 @@ class Mook:
     stats: Stats
     weapons: list
     armor: dict
-    skills: dict
+    skills: Skills
     special: list
     custom: bool = False
-
-    # def __init__(self, name, mook_type, stats, weapons,
-    #              armor, skills, special):
-    #     self.name = name
-    #     self.mook_type = mook_type
-    #     self.stats = stats
-    #     self.weapons = weapons
-    #     self.armor = armor  # should probably be a dictionary
-    #     self.skills = skills
-    #     self.special = special
 
     def __post_init__(self):
         self.hp = self.stats.max_hp
@@ -47,6 +37,10 @@ class Mook:
         ]
 
     @property
+    def is_seriously_wounded(self):
+        return self.hp < self.seriously_wounded
+
+    @property
     def combat_skills(self):
         return {k: v for k, v in self.skills.to_dict().items()
                 if k in self.combat_skills_list and v['rank'] > 0}
@@ -64,8 +58,16 @@ class Mook:
         return weapons_data
 
     def to_dict(self):
-        return asdict(self)
-
+        return {
+            'name': self.name,
+            'mook_type': self.mook_type,
+            'stats': self.stats.to_dict(),
+            'weapons': [weapon.__dict__ for weapon in self.weapons],
+            'armor': self.armor,
+            'skills': self.skills.to_dict(),
+            'special': self.special,
+            'custom': True
+        }
     @staticmethod
     def from_dict(mook_dict: Dict):
         stats = mook_dict.pop('stats')
@@ -74,9 +76,9 @@ class Mook:
         weapon_objs = []
         for weapon in weapons:
             if weapon['skill'] == 'melee_weapon':
-                weapon_objs.append(MeleeWeapon(**weapon))
+                weapon_objs.append(Weapon(**weapon))
             else:
-                weapon_objs.append(RangedWeapon(**weapon))
+                weapon_objs.append(Weapon(**weapon))
 
         skills_obj = deepcopy(Skills())
         mook = Mook(**mook_dict, stats=Stats(**stats), skills=skills_obj.from_dict(skills), weapons=weapon_objs)
