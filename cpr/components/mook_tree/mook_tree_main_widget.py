@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import urwid
 
 from cpr.components.mook_tree.core_mook_tree import CoreMookTypeNode
@@ -79,7 +81,7 @@ class MookTreeMainWidget(urwid.WidgetWrap):
                 self.debug('Adding Custom Mook')
                 mook_name = focus_node.get_key()
                 mook = list(filter(lambda x: x.name == mook_name, self.custom_mook_list))[0]
-                self.event_handler('add_mook_to_roster', mook)
+                self.event_handler('add_mook_to_roster', deepcopy(mook))
 
 
 class TopNode(urwid.ParentNode):

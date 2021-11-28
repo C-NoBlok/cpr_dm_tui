@@ -8,7 +8,6 @@ from cpr.mooks.skills import Skills
 from cpr.weapons import Weapon
 
 
-@dataclass
 class Mook:
     name: str
     mook_type: str
@@ -19,7 +18,24 @@ class Mook:
     special: list
     custom: bool = False
 
-    def __post_init__(self):
+    def __init__(self,
+                 name: str,
+                 mook_type: str,
+                 stats: Stats,
+                 weapons: list,
+                 armor: dict,
+                 skills: Skills,
+                 special: list,
+                 custom: bool = False):
+        self.name = name
+        self.mook_type = mook_type
+        self.stats = stats
+        self.weapons = weapons
+        self.armor = armor
+        self.skills = skills
+        self.special = special
+        self.custom = custom
+
         self.hp = self.stats.max_hp
         self.seriously_wounded = ceil(self.stats.max_hp / 2)
         self.death_save = self.stats.BODY
