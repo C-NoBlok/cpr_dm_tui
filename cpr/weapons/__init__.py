@@ -158,7 +158,7 @@ def bows_and_crossbows():
         ROF=1,
         skill='archery',
         hands_required=2,
-        clip_size=None
+        clip_size=1
     )
 
 
