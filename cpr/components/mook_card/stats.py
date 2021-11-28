@@ -1,3 +1,5 @@
+import math
+
 import urwid
 
 from cpr.components.mook_card.damage import TakeDamageDialog
@@ -156,11 +158,11 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
                 self.mook.hp = int(num)
 
         if 'Head' in object.caption:
-            self.mook.armor['head'] = num
+            self.mook.armor['head'] = int(num)
             return
 
         if 'Body' in object.caption:
-            self.mook.armor['body'] = num
+            self.mook.armor['body'] = int(num)
             return
 
         self.secondary_stats_component.original_widget = self.generate_secondary_stats_contents()
@@ -179,8 +181,12 @@ class Stats(urwid.WidgetWrap, urwid.WidgetContainerMixin):
             piece_ablated = 'body' if dmg_dialog.body.state else 'head'
             damage = dmg_dialog.damage_amount.value()
             ablate_by = dmg_dialog.ablate_by.value()
+            half_sp = dmg_dialog.half_sp_checkbox.state
 
-            damage_taken = damage - self.mook.armor[piece_ablated]
+            sp = self.mook.armor[piece_ablated]
+            if half_sp:
+                sp = math.ceil(sp / 2)
+            damage_taken = damage - sp
             if damage_taken > 0:
                 if piece_ablated == 'head':
                     self.event_log.event("Head Shot! Brutal Double Damage.")

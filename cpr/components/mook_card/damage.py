@@ -15,22 +15,17 @@ class TakeDamageDialog(urwid.WidgetWrap):
         self.head = urwid.RadioButton(armor_group, 'Head', False)
         self.body = urwid.RadioButton(armor_group, 'Body', True)
 
+        self.half_sp_checkbox = urwid.CheckBox("Half SP", state=False)
+
         accept_button = TakeDamageButton('Accept', on_press=lambda btn: self._emit('close', True))
         close_button = TakeDamageButton("Close", on_press=lambda btn: self._emit('close', False))
-
-        self.grid = urwid.GridFlow([
-            self.damage_amount, self.head,
-            self.ablate_by, self.body,
-            accept_button, close_button
-        ],
-            40, 1, 0, 'center')
-
 
         self.widget = urwid.GridFlow([
             urwid.Pile([self.damage_amount, self.ablate_by]),
             urwid.Pile([self.head, self.body])
         ], 25, 0, 1, 'center')
         self.pile = urwid.Pile([self.widget,
+                                urwid.Padding(self.half_sp_checkbox, 'center', ('relative', 30), min_width=30),
                                 urwid.GridFlow([accept_button, close_button], 15, 1, 2, 'center')
                                 ])
         self.widget = urwid.LineBox(self.pile)
